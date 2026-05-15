@@ -3,1414 +3,1082 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>광고마케터 올인원 툴 ✦</title>
+<title>GOGUP TOOL — 마케터 올인원</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <style>
-  :root {
-    --navy-deep:   #080E1A;
-    --navy-mid:    #0D1B35;
-    --navy-card:   #111D38;
-    --navy-border: #1E3260;
-    --accent:      #4DFFB0;
-    --accent2:     #5B8FFF;
-    --accent3:     #FF6BBA;
-    --gold:        #FFD166;
-    --white:       #F0F4FF;
-    --muted:       #7A93C0;
-    --danger:      #FF4D6D;
-    --success:     #4DFFB0;
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body:    'Noto Sans KR', sans-serif;
-    --font-mono:    'Space Mono', monospace;
-  }
+:root{
+  --bg:#07090F;--surface:#0C1020;--card:#101525;--border:#1A2540;
+  --accent:#39FFB0;--accent2:#4E8FFF;--accent3:#FF5FA0;--gold:#FFD166;--purple:#A78BFA;
+  --white:#E8EEFF;--muted:#5A7099;--danger:#FF4D6D;
+  --fd:'Bebas Neue',sans-serif;--fb:'Noto Sans KR',sans-serif;--fm:'Space Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.1;pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite alternate}
+.orb-1{width:600px;height:600px;background:var(--accent2);top:-250px;left:-150px;animation-duration:22s}
+.orb-2{width:450px;height:450px;background:var(--accent3);bottom:-200px;right:-100px;animation-duration:28s;animation-delay:-10s}
+.orb-3{width:350px;height:350px;background:var(--purple);top:40%;left:55%;animation-duration:16s;animation-delay:-5s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,70px) scale(1.2)}}
+.wrap{position:relative;z-index:1;display:flex;min-height:100vh}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── SIDEBAR ── */
+.sb{width:272px;flex-shrink:0;background:linear-gradient(180deg,#090D1A,#0C1525);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-logo{padding:28px 20px 20px;border-bottom:1px solid var(--border)}
+.sb-logo .tag{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);font-family:var(--fm);margin-bottom:5px}
+.sb-logo h1{font-family:var(--fd);font-size:29px;letter-spacing:2px;line-height:1.05;background:linear-gradient(135deg,var(--white),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-logo .ver{font-size:9px;color:var(--muted);font-family:var(--fm);margin-top:4px}
+.nav-sec{padding:16px 13px 5px}
+.nav-lbl{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;font-family:var(--fm);padding:0 7px;margin-bottom:7px}
+.nb{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left;margin-bottom:3px;position:relative;overflow:hidden}
+.nb::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 3px 3px 0;transform:scaleY(0);transition:transform .2s}
+.nb:hover{background:rgba(57,255,176,.05);color:var(--white);border-color:var(--border)}
+.nb.on{background:rgba(57,255,176,.07);color:var(--accent);border-color:rgba(57,255,176,.17)}
+.nb.on::before{transform:scaleY(1)}
+.nb .ic{font-size:16px;width:21px;text-align:center;flex-shrink:0}
+.nb .bdg{margin-left:auto;font-size:8px;padding:2px 6px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:99px;color:var(--purple);font-family:var(--fm)}
+.sb-memo{margin-top:auto;padding:13px;border-top:1px solid var(--border)}
+.ml{font-size:9px;letter-spacing:3px;color:var(--accent);font-family:var(--fm);text-transform:uppercase;margin-bottom:6px}
+.mta{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:var(--fb);font-size:11px;padding:8px 10px;resize:vertical;min-height:88px;outline:none;transition:border-color .2s;line-height:1.6}
+.mta:focus{border-color:var(--accent2)}
+.mta::placeholder{color:var(--muted)}
 
-  html { scroll-behavior: smooth; }
+/* ── MAIN ── */
+.main{flex:1;padding:36px 42px;overflow-x:hidden}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:34px;animation:fu .5s ease both}
+.ph-t .ey{font-size:9px;letter-spacing:5px;font-family:var(--fm);color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.ph-t h2{font-family:var(--fd);font-size:48px;letter-spacing:3px;line-height:.95;background:linear-gradient(130deg,var(--white),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ph-t p{color:var(--muted);font-size:12px;margin-top:8px;max-width:460px;line-height:1.7}
+.sbdg{display:flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(57,255,176,.07);border:1px solid rgba(57,255,176,.17);border-radius:99px;font-size:10px;font-family:var(--fm);color:var(--accent)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pd 2s ease infinite}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-  body {
-    background: var(--navy-deep);
-    color: var(--white);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;animation:fu .5s ease both;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(78,143,255,.03),transparent 55%);pointer-events:none}
+.card:hover{border-color:rgba(78,143,255,.28);box-shadow:0 6px 32px rgba(78,143,255,.07)}
+.ct{display:flex;align-items:center;gap:8px;font-size:10px;font-family:var(--fm);letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:16px}
+.ct::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 
-  /* ── BG noise texture ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0;
-  }
+/* ── FORM ── */
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:var(--fm);color:var(--muted);margin-bottom:6px}
+.fi,.fs,.fta{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:var(--white);font-family:var(--fb);font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(78,143,255,.1)}
+.fi::placeholder{color:var(--muted)}
+.fs{cursor:pointer}.fs option{background:var(--surface)}
+.fta{resize:vertical;min-height:80px;line-height:1.65}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
 
-  /* ── Animated gradient orbs ── */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.12;
-    pointer-events: none;
-    z-index: 0;
-    animation: drift 18s ease-in-out infinite alternate;
-  }
-  .orb-1 { width: 500px; height: 500px; background: var(--accent2); top: -200px; left: -100px; animation-duration: 20s; }
-  .orb-2 { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; right: -100px; animation-duration: 25s; animation-delay: -8s; }
-  .orb-3 { width: 300px; height: 300px; background: var(--accent); top: 40%; left: 50%; animation-duration: 15s; animation-delay: -4s; }
+/* ── UPLOAD ── */
+.uz{border:2px dashed var(--border);border-radius:12px;padding:34px;text-align:center;cursor:pointer;transition:all .25s;background:rgba(255,255,255,.01);position:relative}
+.uz:hover,.uz.dov{border-color:var(--accent2);background:rgba(78,143,255,.05)}
+.uz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.uz .uic{font-size:42px;margin-bottom:9px}
+.uz h3{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
+.uz p{font-size:11px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(57,255,176,.07);border:1px solid rgba(57,255,176,.17);border-radius:99px;font-size:10px;font-family:var(--fm);color:var(--accent)}
+.chip button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0}
 
-  @keyframes drift {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(40px, 60px) scale(1.15); }
-  }
+/* ── AI SELECTOR ── */
+.ai-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.aio{padding:14px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center;background:rgba(255,255,255,.02);position:relative}
+.aio:hover{border-color:rgba(78,143,255,.4)}
+.aio.sel{border-color:var(--accent2);background:rgba(78,143,255,.09)}
+.aio .aic{font-size:24px;margin-bottom:6px}
+.aio .anm{font-size:11px;font-weight:700;color:var(--white);margin-bottom:2px}
+.aio .asb{font-size:9px;color:var(--muted);font-family:var(--fm)}
+.aio .abg{position:absolute;top:6px;right:6px;font-size:8px;padding:2px 6px;border-radius:99px;font-family:var(--fm);background:rgba(57,255,176,.12);color:var(--accent);border:1px solid rgba(57,255,176,.25)}
 
-  /* ── Layout ── */
-  .wrapper { position: relative; z-index: 1; display: flex; min-height: 100vh; }
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 24px;border-radius:10px;border:none;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.bp{background:linear-gradient(135deg,var(--accent2),#7C3AED);color:#fff;box-shadow:0 4px 18px rgba(78,143,255,.28)}
+.bp:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(78,143,255,.38)}
+.ba{background:linear-gradient(135deg,var(--accent),#00D68F);color:var(--bg);box-shadow:0 4px 18px rgba(57,255,176,.2)}
+.ba:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(57,255,176,.3)}
+.bg{background:linear-gradient(135deg,var(--gold),#FF9500);color:var(--bg);box-shadow:0 4px 18px rgba(255,209,102,.2)}
+.bg:hover{transform:translateY(-2px)}
+.bpur{background:linear-gradient(135deg,var(--purple),#7C3AED);color:#fff;box-shadow:0 4px 18px rgba(167,139,250,.28)}
+.bpur:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(167,139,250,.38)}
+.bsm{padding:7px 14px;font-size:11px}
+.bfl{width:100%}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.btn:active{transform:translateY(0)!important}
 
-  /* ── Sidebar ── */
-  .sidebar {
-    width: 260px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #0A1220 0%, #0D1B35 100%);
-    border-right: 1px solid var(--navy-border);
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-  }
+/* ── PROGRESS ── */
+.pg{height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin:13px 0;display:none}
+.pg.on{display:block}
+.pgf{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;width:0%;transition:width .35s}
 
-  .sidebar-logo {
-    padding: 32px 24px 24px;
-    border-bottom: 1px solid var(--navy-border);
-  }
-  .sidebar-logo .logo-tag {
-    font-size: 10px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    margin-bottom: 6px;
-  }
-  .sidebar-logo h1 {
-    font-family: var(--font-display);
-    font-size: 28px;
-    letter-spacing: 2px;
-    line-height: 1.1;
-    background: linear-gradient(135deg, var(--white) 0%, var(--accent2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .sidebar-logo .version {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    margin-top: 4px;
-  }
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+.stat{padding:17px;background:var(--card);border:1px solid var(--border);border-radius:13px}
+.sl{font-size:8px;letter-spacing:3px;color:var(--muted);font-family:var(--fm);text-transform:uppercase;margin-bottom:6px}
+.sv{font-family:var(--fd);font-size:28px;letter-spacing:1px}
+.ss{font-size:10px;color:var(--muted);margin-top:2px}
+.cg{color:var(--accent)}.cb{color:var(--accent2)}.cp{color:var(--accent3)}.cgo{color:var(--gold)}.cpur{color:var(--purple)}
 
-  .nav-section { padding: 20px 16px 8px; }
-  .nav-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-    padding: 0 8px;
-    margin-bottom: 8px;
-  }
+/* ── TABLE ── */
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead tr{background:var(--surface)}
+thead th{padding:10px 13px;text-align:left;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(26,37,64,.5);transition:background .12s}
+tbody tr:hover{background:rgba(78,143,255,.04)}
+tbody td{padding:8px 13px;color:var(--white);font-size:11px;white-space:nowrap}
+tbody tr:last-child{border-bottom:none}
 
-  .nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    width: 100%;
-    text-align: left;
-    margin-bottom: 4px;
-    position: relative;
-    overflow: hidden;
-  }
-  .nav-btn::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-    border-radius: 0 3px 3px 0;
-    transform: scaleY(0);
-    transition: transform 0.2s ease;
-  }
-  .nav-btn:hover { background: rgba(77,255,176,0.05); color: var(--white); border-color: var(--navy-border); }
-  .nav-btn.active { background: rgba(77,255,176,0.08); color: var(--accent); border-color: rgba(77,255,176,0.2); }
-  .nav-btn.active::before { transform: scaleY(1); }
-  .nav-btn .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+/* ── AI RESULT BOX ── */
+.aib{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px;display:none}
+.aib.on{display:block}
+.aib-h{display:flex;align-items:center;gap:7px;font-size:9px;font-family:var(--fm);letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.aib-c{font-size:12px;line-height:1.85;color:var(--white);white-space:pre-wrap}
+.cur{display:inline-block;width:2px;height:13px;background:var(--accent);margin-left:2px;animation:bl 1s step-end infinite;vertical-align:middle}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
 
-  .sidebar-memo {
-    margin-top: auto;
-    padding: 16px;
-    border-top: 1px solid var(--navy-border);
-  }
-  .memo-label {
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .memo-textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--navy-border);
-    border-radius: 8px;
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 12px;
-    padding: 10px 12px;
-    resize: vertical;
-    min-height: 100px;
-    outline: none;
-    transition: border-color 0.2s;
-    line-height: 1.6;
-  }
-  .memo-textarea:focus { border-color: var(--accent2); }
-  .memo-textarea::placeholder { color: var(--muted); }
+/* ── TREND LINKS ── */
+.tlinks{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}
+.tlbtn{display:flex;align-items:center;gap:7px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.02);color:var(--white);font-family:var(--fb);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+.tlbtn:hover{border-color:var(--accent2);background:rgba(78,143,255,.08);transform:translateY(-1px)}
+.tlbtn .tlic{font-size:18px}
 
-  /* ── Main Content ── */
-  .main { flex: 1; padding: 40px 48px; overflow-x: hidden; }
+/* ── HISTORY ── */
+.hist-empty{padding:28px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)}
 
-  /* ── Page Header ── */
-  .page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 40px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .page-header-text .eyebrow {
-    font-size: 10px;
-    letter-spacing: 4px;
-    font-family: var(--font-mono);
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .page-header-text h2 {
-    font-family: var(--font-display);
-    font-size: 48px;
-    letter-spacing: 3px;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--white), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .page-header-text p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 8px;
-    max-width: 480px;
-    line-height: 1.6;
-  }
-  .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(77,255,176,0.08);
-    border: 1px solid rgba(77,255,176,0.2);
-    border-radius: 99px;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--accent);
-  }
-  .status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse-dot 2s ease infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
+/* ══════════════════════════════════════
+   REPORT WRITE PAGE — ANALYSIS SELECTOR
+══════════════════════════════════════ */
+.anl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.anl-card{
+  padding:16px 14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  transition:all .22s;
+  background:rgba(255,255,255,.02);
+  position:relative;
+  user-select:none;
+}
+.anl-card:hover{border-color:rgba(167,139,250,.45);background:rgba(167,139,250,.06)}
+.anl-card.on{border-color:var(--purple);background:rgba(167,139,250,.12);box-shadow:0 0 0 1px rgba(167,139,250,.25)}
+.anl-card .ac-check{
+  position:absolute;top:10px;right:10px;
+  width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--border);
+  background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:all .18s;
+}
+.anl-card.on .ac-check{background:var(--purple);border-color:var(--purple);color:#fff}
+.anl-card .ac-ico{font-size:26px;margin-bottom:8px}
+.anl-card .ac-nm{font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px}
+.anl-card .ac-ds{font-size:10px;color:var(--muted);line-height:1.5}
 
-  /* ── Cards ── */
-  .card {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 24px;
-    animation: fadeUp 0.6s ease both;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(91,143,255,0.03) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .card:hover { border-color: rgba(91,143,255,0.35); box-shadow: 0 8px 40px rgba(91,143,255,0.08); }
+/* selected tags strip */
+.sel-tags{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;margin:10px 0 0}
+.stag{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28);border-radius:99px;font-size:10px;font-family:var(--fm);color:var(--purple)}
+.no-sel{font-size:11px;color:var(--muted);font-family:var(--fm);padding:4px 0}
 
-  .card-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    font-family: var(--font-mono);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent2);
-    margin-bottom: 20px;
-  }
-  .card-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--navy-border), transparent);
-  }
+/* report output */
+.rpt-out{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:22px;margin-top:14px;display:none;position:relative}
+.rpt-out.on{display:block}
+.rpt-out-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.rpt-out-title{font-size:10px;font-family:var(--fm);letter-spacing:2px;color:var(--purple);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.rpt-actions{display:flex;gap:8px}
+.rpt-content{font-size:13px;line-height:1.9;color:var(--white);white-space:pre-wrap;max-height:560px;overflow-y:auto;padding-right:6px}
+.rpt-content::-webkit-scrollbar{width:4px}
+.rpt-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 
-  /* ── Upload Zone ── */
-  .upload-zone {
-    border: 2px dashed var(--navy-border);
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(255,255,255,0.01);
-    position: relative;
-  }
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--accent2);
-    background: rgba(91,143,255,0.06);
-  }
-  .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-  .upload-icon { font-size: 48px; margin-bottom: 12px; }
-  .upload-zone h3 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-  .upload-zone p { font-size: 12px; color: var(--muted); }
+/* section badges inside report */
+.rpt-content .section-tag{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  font-size:9px;font-family:var(--fm);letter-spacing:1px;
+  background:rgba(167,139,250,.15);color:var(--purple);
+  margin-right:6px;
+}
 
-  .file-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .file-chip {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 12px;
-    background: rgba(77,255,176,0.08);
-    border: 1px solid rgba(77,255,176,0.2);
-    border-radius: 99px;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--accent);
-  }
-  .file-chip button {
-    background: none; border: none; color: var(--accent); cursor: pointer;
-    font-size: 12px; line-height: 1; padding: 0; margin-left: 2px;
-  }
+/* copy feedback */
+.copied{position:absolute;top:14px;right:14px;padding:5px 12px;background:rgba(57,255,176,.15);border:1px solid rgba(57,255,176,.3);border-radius:8px;font-size:10px;font-family:var(--fm);color:var(--accent);opacity:0;transition:opacity .3s;pointer-events:none}
+.copied.show{opacity:1}
 
-  /* ── Inputs ── */
-  .form-group { margin-bottom: 18px; }
-  .form-label {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .form-input, .form-select, .form-textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--navy-border);
-    border-radius: 10px;
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.25s, box-shadow 0.25s;
-  }
-  .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: var(--accent2);
-    box-shadow: 0 0 0 3px rgba(91,143,255,0.12);
-  }
-  .form-input::placeholder { color: var(--muted); }
-  .form-select { cursor: pointer; }
-  .form-select option { background: var(--navy-mid); }
-  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+/* page */
+.page{display:none}
+.page.active{display:block}
 
-  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+/* toast */
+.tc{position:fixed;bottom:26px;right:26px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:11px 16px;border-radius:11px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;min-width:240px;animation:si .25s ease both;pointer-events:all;box-shadow:0 8px 26px rgba(0,0,0,.45)}
+.toast.s{background:#0B2A1C;border:1px solid rgba(57,255,176,.27);color:var(--accent)}
+.toast.e{background:#2A0B11;border:1px solid rgba(255,77,109,.27);color:var(--danger)}
+.toast.i{background:var(--card);border:1px solid var(--border);color:var(--white)}
+@keyframes si{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation-delay:.04s}.a2{animation-delay:.09s}.a3{animation-delay:.14s}.a4{animation-delay:.19s}.a5{animation-delay:.24s}.a6{animation-delay:.29s}
 
-  /* ── AI Model Selector ── */
-  .ai-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .ai-option {
-    padding: 16px;
-    border: 1px solid var(--navy-border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    text-align: center;
-    background: rgba(255,255,255,0.02);
-    position: relative;
-  }
-  .ai-option:hover { border-color: rgba(91,143,255,0.4); }
-  .ai-option.selected { border-color: var(--accent2); background: rgba(91,143,255,0.1); }
-  .ai-option .ai-icon { font-size: 28px; margin-bottom: 8px; }
-  .ai-option .ai-name { font-size: 12px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
-  .ai-option .ai-sub  { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
-  .ai-option .ai-badge {
-    position: absolute; top: 8px; right: 8px;
-    font-size: 8px; letter-spacing: 1px;
-    padding: 2px 6px;
-    border-radius: 99px;
-    font-family: var(--font-mono);
-    background: rgba(77,255,176,0.15);
-    color: var(--accent);
-    border: 1px solid rgba(77,255,176,0.3);
-  }
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 
-  /* ── Channel Cards ── */
-  .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .channel-card {
-    padding: 20px;
-    border: 1px solid var(--navy-border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    background: rgba(255,255,255,0.02);
-    position: relative;
-  }
-  .channel-card:hover { border-color: rgba(91,143,255,0.4); }
-  .channel-card.selected { border-color: var(--accent3); background: rgba(255,107,186,0.08); }
-  .channel-card .ch-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .channel-card .ch-icon { font-size: 28px; }
-  .channel-card .ch-name { font-size: 14px; font-weight: 700; color: var(--white); }
-  .channel-card .ch-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .channel-card .ch-check {
-    position: absolute; top: 12px; right: 12px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 2px solid var(--navy-border);
-    background: transparent;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    transition: all 0.2s;
-  }
-  .channel-card.selected .ch-check { background: var(--accent3); border-color: var(--accent3); color: white; }
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 
-  /* ── Kakao Login ── */
-  .kakao-login-section {
-    display: none;
-    margin-top: 16px;
-    padding: 20px;
-    background: rgba(254,229,0,0.04);
-    border: 1px solid rgba(254,229,0,0.2);
-    border-radius: 12px;
-  }
-  .kakao-login-section.visible { display: block; }
-  .kakao-login-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    padding: 14px;
-    background: #FEE500;
-    color: #191919;
-    border: none;
-    border-radius: 10px;
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 20px rgba(254,229,0,0.2);
-  }
-  .kakao-login-btn:hover { background: #F5DC00; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(254,229,0,0.3); }
-  .kakao-login-btn:active { transform: translateY(0); }
-  .kakao-status {
-    margin-top: 12px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-family: var(--font-mono);
-    display: none;
-  }
-  .kakao-status.connected {
-    display: block;
-    background: rgba(77,255,176,0.08);
-    border: 1px solid rgba(77,255,176,0.2);
-    color: var(--accent);
-  }
-
-  /* ── Slack section ── */
-  .slack-section { display: none; margin-top: 16px; }
-  .slack-section.visible { display: block; }
-
-  /* ── Buttons ── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px 28px;
-    border-radius: 10px;
-    border: none;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    letter-spacing: 0.5px;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent2), #8B5CF6);
-    color: white;
-    box-shadow: 0 4px 20px rgba(91,143,255,0.3);
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(91,143,255,0.4); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-accent {
-    background: linear-gradient(135deg, var(--accent), #00D68F);
-    color: var(--navy-deep);
-    box-shadow: 0 4px 20px rgba(77,255,176,0.25);
-  }
-  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(77,255,176,0.35); }
-  .btn-full { width: 100%; }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-  /* ── Progress ── */
-  .progress-bar {
-    height: 4px;
-    background: var(--navy-border);
-    border-radius: 99px;
-    overflow: hidden;
-    margin: 16px 0;
-    display: none;
-  }
-  .progress-bar.visible { display: block; }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    border-radius: 99px;
-    width: 0%;
-    transition: width 0.4s ease;
-  }
-
-  /* ── Toast ── */
-  .toast-container {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
-  }
-  .toast {
-    padding: 14px 20px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 280px;
-    animation: slideIn 0.3s ease both;
-    pointer-events: all;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-  .toast.success { background: #0D2E1F; border: 1px solid rgba(77,255,176,0.3); color: var(--accent); }
-  .toast.error   { background: #2E0D14; border: 1px solid rgba(255,77,109,0.3); color: var(--danger); }
-  .toast.info    { background: var(--navy-card); border: 1px solid var(--navy-border); color: var(--white); }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-  /* ── Preview Table ── */
-  .table-wrapper { overflow-x: auto; border-radius: 10px; border: 1px solid var(--navy-border); }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead tr { background: var(--navy-mid); }
-  thead th {
-    padding: 12px 16px;
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    border-bottom: 1px solid var(--navy-border);
-    white-space: nowrap;
-  }
-  tbody tr { border-bottom: 1px solid rgba(30,50,96,0.5); transition: background 0.15s; }
-  tbody tr:hover { background: rgba(91,143,255,0.04); }
-  tbody td { padding: 10px 16px; color: var(--white); font-size: 12px; white-space: nowrap; }
-  tbody tr:last-child { border-bottom: none; }
-
-  /* ── AI Chat Preview ── */
-  .ai-result-box {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--navy-border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 16px;
-    display: none;
-  }
-  .ai-result-box.visible { display: block; }
-  .ai-result-header {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 10px; font-family: var(--font-mono);
-    letter-spacing: 2px; color: var(--accent); text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--navy-border);
-  }
-  .ai-result-content {
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--white);
-    white-space: pre-wrap;
-  }
-  .typing-cursor {
-    display: inline-block;
-    width: 2px; height: 14px;
-    background: var(--accent);
-    margin-left: 2px;
-    animation: blink 1s step-end infinite;
-    vertical-align: middle;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-  /* ── Stats Row ── */
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-  .stat-card {
-    padding: 20px;
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 14px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .stat-card .s-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; margin-bottom: 8px; }
-  .stat-card .s-value { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; }
-  .stat-card .s-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .color-green { color: var(--accent); }
-  .color-blue  { color: var(--accent2); }
-  .color-pink  { color: var(--accent3); }
-  .color-gold  { color: var(--gold); }
-
-  /* ── Page visibility ── */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* ── Animations ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .anim-1 { animation-delay: 0.05s; }
-  .anim-2 { animation-delay: 0.12s; }
-  .anim-3 { animation-delay: 0.19s; }
-  .anim-4 { animation-delay: 0.26s; }
-  .anim-5 { animation-delay: 0.33s; }
-
-  /* ── Divider ── */
-  .divider { height: 1px; background: var(--navy-border); margin: 24px 0; }
-
-  /* ── Loading Spinner ── */
-  .spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: var(--white);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--navy-deep); }
-  ::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 99px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-  /* ── Responsive ── */
-  @media (max-width: 900px) {
-    .sidebar { width: 220px; }
-    .main { padding: 24px 20px; }
-    .input-row { grid-template-columns: 1fr; }
-    .ai-selector { grid-template-columns: 1fr; }
-    .channel-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-  }
+@media(max-width:860px){
+  .sb{width:200px}.main{padding:20px 14px}
+  .r2,.r3{grid-template-columns:1fr}
+  .ai-g{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .anl-grid{grid-template-columns:1fr 1fr}
+  .tlinks{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="wrap">
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
+<!-- ══ SIDEBAR ══ -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="tag">✦ MARKETING OS</div>
+    <h1>GOGUP<br>TOOL</h1>
+    <div class="ver">v3.0 — All-in-One Edition</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">도구</div>
+    <button class="nb on" onclick="go('report',this)"><span class="ic">📊</span>리포트 자동화</button>
+    <button class="nb" onclick="go('monitor',this)"><span class="ic">🤖</span>트렌드 모니터링</button>
+    <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성<span class="bdg">NEW</span></button>
+  </div>
+  <div class="sb-memo">
+    <div class="ml">✏ 메모장</div>
+    <textarea class="mta" id="memo" placeholder="아이디어, 할 일, 인사이트 ✍️"></textarea>
+  </div>
+</aside>
 
-<div class="wrapper">
-  <!-- ─── SIDEBAR ─── -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-tag">✦ MARKETING OS</div>
-      <h1>GOGUP<br>TOOL</h1>
-      <div class="version">v2.0 — Premium Edition</div>
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+<!-- ▓▓▓▓▓ PAGE 1 : REPORT ▓▓▓▓▓ -->
+<div class="page active" id="page-report">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey">✦ 01 — Report Automation</div>
+      <h2>REPORT<br>HUB</h2>
+      <p>여러 매체 Raw 데이터를 병합·정제하고 날짜/시간 기록과 함께 엑셀로 누적 저장합니다.</p>
     </div>
+    <div class="sbdg"><div class="sdot"></div>READY</div>
+  </div>
 
-    <div class="nav-section">
-      <div class="nav-label">도구</div>
-      <button class="nav-btn active" onclick="switchPage('report', this)">
-        <span class="icon">📊</span>
-        <span>리포트 자동화</span>
-      </button>
-      <button class="nav-btn" onclick="switchPage('monitor', this)">
-        <span class="icon">🤖</span>
-        <span>트렌드 모니터링</span>
-      </button>
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 데이터 업로드</div>
+    <div class="uz" id="dz" ondragover="dov(event)" ondragleave="dlv()" ondrop="ddr(event)">
+      <input type="file" id="fi" multiple accept=".xlsx,.xls,.csv" onchange="hf(this.files)">
+      <div class="uic">📂</div>
+      <h3>파일을 드래그하거나 클릭해서 선택</h3>
+      <p>Excel (.xlsx .xls) · CSV — 다중 선택 가능</p>
     </div>
+    <div class="chips" id="chips"></div>
+  </div>
 
-    <div class="sidebar-memo">
-      <div class="memo-label">✏ 실시간 메모장</div>
-      <textarea class="memo-textarea" id="sidebarMemo" placeholder="아이디어, 할 일, 인사이트를 여기에 메모해요 ✍️"></textarea>
+  <div class="card a2">
+    <div class="ct">02 &nbsp; 저장 설정</div>
+    <div class="r2">
+      <div class="fg"><label class="fl">파일 이름</label><input class="fi" type="text" id="ofn" placeholder="통합리포트_20260515"></div>
+      <div class="fg"><label class="fl">시트 이름</label><input class="fi" type="text" id="shn" value="통합데이터"></div>
     </div>
-  </aside>
+  </div>
 
-  <!-- ─── MAIN ─── -->
-  <main class="main">
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 생성 & 다운로드</div>
+    <div class="r2">
+      <button class="btn bp bfl" onclick="genReport()" id="genBtn"><span>🚀</span> 통합 리포트 생성</button>
+      <button class="btn ba bfl" onclick="dlReport()" id="dlBtn" style="display:none"><span>⬇️</span> 엑셀 다운로드</button>
+    </div>
+    <div class="pg" id="rp"><div class="pgf" id="rpf"></div></div>
+  </div>
 
-    <!-- ════════════════════════════════════
-         PAGE 1: REPORT
-    ════════════════════════════════════ -->
-    <div class="page active" id="page-report">
-      <div class="page-header">
-        <div class="page-header-text">
-          <div class="eyebrow">✦ 01 — Report Automation</div>
-          <h2>REPORT<br>HUB</h2>
-          <p>여러 매체의 Raw 데이터를 한 번에 병합하고 정제합니다. CTR·CPC 자동 계산 포함.</p>
-        </div>
-        <div class="status-badge">
-          <div class="status-dot"></div>
-          READY
-        </div>
-      </div>
+  <div id="statsArea" style="display:none">
+    <div class="stats a1">
+      <div class="stat"><div class="sl">총 레코드</div><div class="sv cb" id="sRow">—</div><div class="ss">merged rows</div></div>
+      <div class="stat"><div class="sl">매체 수</div><div class="sv cg" id="sSrc">—</div><div class="ss">sources</div></div>
+      <div class="stat"><div class="sl">평균 CTR</div><div class="sv cp" id="sCTR">—</div><div class="ss">click-through</div></div>
+      <div class="stat"><div class="sl">평균 CPC</div><div class="sv cgo" id="sCPC">—</div><div class="ss">cost/click</div></div>
+    </div>
+    <div class="card a2">
+      <div class="ct">👀 미리보기 (상위 10행)</div>
+      <div class="tw" id="prev"></div>
+    </div>
+  </div>
 
-      <!-- Upload -->
-      <div class="card anim-1">
-        <div class="card-title">01 &nbsp; 데이터 업로드</div>
-        <div class="upload-zone" id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-          <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv" onchange="handleFiles(this.files)">
-          <div class="upload-icon">📂</div>
-          <h3>파일을 여기에 드래그하거나 클릭해서 선택</h3>
-          <p>Excel (.xlsx, .xls), CSV 파일 — 다중 선택 가능</p>
-        </div>
-        <div class="file-chips" id="fileChips"></div>
-      </div>
-
-      <!-- Save Settings -->
-      <div class="card anim-2">
-        <div class="card-title">02 &nbsp; 저장 설정</div>
-        <div class="input-row">
-          <div class="form-group">
-            <label class="form-label">저장할 파일 이름</label>
-            <input class="form-input" type="text" id="outputFileName" placeholder="통합리포트_20260515">
-          </div>
-          <div class="form-group">
-            <label class="form-label">시트 이름</label>
-            <input class="form-input" type="text" id="sheetName" value="통합데이터" placeholder="통합데이터">
-          </div>
-        </div>
-      </div>
-
-      <!-- Action -->
-      <div class="card anim-3">
-        <div class="card-title">03 &nbsp; 리포트 생성</div>
-        <button class="btn btn-primary btn-full" onclick="generateReport()" id="genBtn">
-          <span>🚀</span> 통합 리포트 생성 시작
-        </button>
-        <div class="progress-bar" id="reportProgress"><div class="progress-fill" id="reportProgressFill"></div></div>
-      </div>
-
-      <!-- Stats (shown after generation) -->
-      <div id="statsSection" style="display:none">
-        <div class="stats-row anim-1">
-          <div class="stat-card"><div class="s-label">총 레코드</div><div class="s-value color-blue" id="statRows">—</div><div class="s-sub">merged rows</div></div>
-          <div class="stat-card"><div class="s-label">매체 수</div><div class="s-value color-green" id="statSources">—</div><div class="s-sub">data sources</div></div>
-          <div class="stat-card"><div class="s-label">평균 CTR</div><div class="s-value color-pink" id="statCTR">—</div><div class="s-sub">click-through rate</div></div>
-          <div class="stat-card"><div class="s-label">평균 CPC</div><div class="s-value color-gold" id="statCPC">—</div><div class="s-sub">cost per click</div></div>
-        </div>
-
-        <!-- Preview Table -->
-        <div class="card">
-          <div class="card-title">👀 데이터 미리보기 (상위 10행)</div>
-          <div class="table-wrapper" id="previewTable"></div>
-        </div>
-
-        <button class="btn btn-accent btn-full" onclick="downloadReport()" style="margin-top:0">
-          <span>⬇️</span> 완성된 리포트 다운로드
-        </button>
+  <div class="card a4">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 누적 저장 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('report')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('report')">삭제</button>
       </div>
     </div>
+    <div id="reportHist"></div>
+  </div>
+</div>
 
-    <!-- ════════════════════════════════════
-         PAGE 2: MONITOR
-    ════════════════════════════════════ -->
-    <div class="page" id="page-monitor">
-      <div class="page-header">
-        <div class="page-header-text">
-          <div class="eyebrow">✦ 02 — Trend Monitoring</div>
-          <h2>INTEL<br>RADAR</h2>
-          <p>AI가 핵심 키워드를 실시간 분석하고 브리핑을 지정 채널로 자동 발송합니다.</p>
-        </div>
-        <div class="status-badge">
-          <div class="status-dot"></div>
-          AI READY
-        </div>
+<!-- ▓▓▓▓▓ PAGE 2 : MONITOR ▓▓▓▓▓ -->
+<div class="page" id="page-monitor">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey">✦ 02 — Trend Monitoring</div>
+      <h2>INTEL<br>RADAR</h2>
+      <p>AI가 키워드를 분석해 브리핑을 생성하고 Google Trends · 네이버 DataLab 링크를 자동으로 열어줍니다. 결과는 엑셀로 누적 저장됩니다.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>AI READY</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 키워드</div>
+    <div class="r2">
+      <div class="fg"><label class="fl">담당 브랜드</label><input class="fi" id="bkw" value="A뷰티" placeholder="예: 라네즈"></div>
+      <div class="fg"><label class="fl">경쟁사 (쉼표 구분)</label><input class="fi" id="ckw" value="B코스메틱, C케어" placeholder="예: B코스메틱, C케어"></div>
+    </div>
+    <div class="fg"><label class="fl">추가 분석 요청</label><textarea class="fta" id="xprompt" placeholder="SNS 반응, 프로모션 전략 등 원하는 포인트를 자유롭게 입력하세요."></textarea></div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct">02 &nbsp; AI 엔진</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">API 키 없이 <strong style="color:var(--accent)">Claude (내장)</strong>를 바로 사용할 수 있어요. 다른 AI를 선택하면 해당 API 키를 입력해주세요.</p>
+    <div class="ai-g" id="maiSel">
+      <div class="aio sel" onclick="selAI('claude','maiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','maiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','maiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+    </div>
+    <div id="mApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="mApiLbl">API Key</label><input class="fi" type="password" id="mApiKey" placeholder="sk-..."></div>
+    </div>
+  </div>
+
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 트렌드 링크 바로가기</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:4px">키워드 입력 후 버튼을 클릭하면 해당 플랫폼에서 바로 확인할 수 있어요.</p>
+    <div class="tlinks">
+      <a class="tlbtn" onclick="openTrend('google')" href="#"><span class="tlic">📈</span>Google Trends</a>
+      <a class="tlbtn" onclick="openTrend('naver')" href="#"><span class="tlic">🟢</span>네이버 DataLab</a>
+      <a class="tlbtn" onclick="openTrend('naverNews')" href="#"><span class="tlic">📰</span>네이버 뉴스 검색</a>
+      <a class="tlbtn" onclick="openTrend('youtube')" href="#"><span class="tlic">▶️</span>YouTube 트렌드</a>
+      <a class="tlbtn" onclick="openTrend('instagram')" href="#"><span class="tlic">📸</span>인스타그램 해시태그</a>
+      <a class="tlbtn" onclick="openTrend('twitter')" href="#"><span class="tlic">𝕏</span>X(트위터) 검색</a>
+    </div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct">04 &nbsp; AI 분석 실행</div>
+    <button class="btn bp bfl" onclick="runMonitor()" id="monBtn"><span>🔔</span> AI 즉시 분석 시작</button>
+    <div class="pg" id="mp"><div class="pgf" id="mpf"></div></div>
+    <div class="aib" id="monResult">
+      <div class="aib-h"><span>🤖</span> AI BRIEFING <span id="monModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
+      <div class="aib-c" id="monContent"></div>
+    </div>
+    <div id="monSaveArea" style="display:none;margin-top:12px">
+      <button class="btn bg bfl" onclick="saveMonitorHist()"><span>💾</span> 분석 결과 엑셀에 누적 저장</button>
+    </div>
+  </div>
+
+  <div class="card a5">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 모니터링 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('monitor')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('monitor')">삭제</button>
+      </div>
+    </div>
+    <div id="monitorHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 3 : WRITE ▓▓▓▓▓ -->
+<div class="page" id="page-write">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey">✦ 03 — Report Writing</div>
+      <h2>REPORT<br>WRITER</h2>
+      <p>분석 항목을 골라 입력만 하면 AI가 완성도 높은 보고서를 자동으로 작성합니다.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>WRITER READY</div>
+  </div>
+
+  <!-- STEP 1: 기본 정보 -->
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 기본 정보</div>
+    <div class="r2">
+      <div class="fg"><label class="fl">보고서 제목</label><input class="fi" id="rTitle" placeholder="예: 5월 뷰티 시장 분석 보고서"></div>
+      <div class="fg"><label class="fl">브랜드 / 제품명</label><input class="fi" id="rBrand" placeholder="예: 라네즈, 설화수"></div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">분석 기간</label><input class="fi" id="rPeriod" placeholder="예: 2026년 4월 ~ 5월"></div>
+      <div class="fg"><label class="fl">작성자</label><input class="fi" id="rAuthor" placeholder="예: 마케팅팀 홍길동"></div>
+    </div>
+    <div class="fg"><label class="fl">핵심 배경 / 목적 (선택)</label><textarea class="fta" id="rBg" placeholder="예: 신제품 론칭 전 시장 현황 파악 및 경쟁사 대비 포지셔닝 전략 수립"></textarea></div>
+  </div>
+
+  <!-- STEP 2: 분석 항목 선택 -->
+  <div class="card a2">
+    <div class="ct">02 &nbsp; 분석 항목 선택 <span style="color:var(--muted);font-size:9px;margin-left:4px">(원하는 항목만 골라서 체크)</span></div>
+    <div class="anl-grid" id="anlGrid">
+
+      <div class="anl-card" data-key="market" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">📊</div>
+        <div class="ac-nm">시장 현황 분석</div>
+        <div class="ac-ds">시장 규모·성장률·주요 플레이어 현황</div>
       </div>
 
-      <!-- Keywords -->
-      <div class="card anim-1">
-        <div class="card-title">01 &nbsp; 키워드 설정</div>
-        <div class="input-row">
-          <div class="form-group">
-            <label class="form-label">담당 브랜드 키워드</label>
-            <input class="form-input" type="text" id="brandKw" placeholder="예: 라네즈, LANEIGE" value="A뷰티">
-          </div>
-          <div class="form-group">
-            <label class="form-label">경쟁사 키워드 (쉼표 구분)</label>
-            <input class="form-input" type="text" id="compKw" placeholder="예: B코스메틱, C케어" value="B코스메틱, C케어">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">추가 분석 요청사항</label>
-          <textarea class="form-textarea" id="extraPrompt" placeholder="예: SNS 반응, 프로모션 전략, 소비자 심리 등 원하는 분석 포인트를 자유롭게 입력하세요."></textarea>
-        </div>
+      <div class="anl-card" data-key="trend" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">📈</div>
+        <div class="ac-nm">트렌드 분석</div>
+        <div class="ac-ds">최신 소비 트렌드·키워드·관심도 변화</div>
       </div>
 
-      <!-- AI Model -->
-      <div class="card anim-2">
-        <div class="card-title">02 &nbsp; AI 엔진 선택</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
-          API 키 없이도 <strong style="color:var(--accent)">Claude (내장)</strong>를 바로 사용할 수 있어요.<br>
-          다른 AI를 쓰려면 해당 API 키를 입력하세요.
-        </p>
-        <div class="ai-selector" id="aiSelector">
-          <div class="ai-option selected" onclick="selectAI('claude', this)">
-            <div class="ai-badge">내장 · 무료</div>
-            <div class="ai-icon">🔮</div>
-            <div class="ai-name">Claude Sonnet</div>
-            <div class="ai-sub">Anthropic · 내장 연동</div>
-          </div>
-          <div class="ai-option" onclick="selectAI('openai', this)">
-            <div class="ai-icon">🧠</div>
-            <div class="ai-name">GPT-4o</div>
-            <div class="ai-sub">OpenAI · API 키 필요</div>
-          </div>
-          <div class="ai-option" onclick="selectAI('gemini', this)">
-            <div class="ai-icon">♊</div>
-            <div class="ai-name">Gemini 1.5 Pro</div>
-            <div class="ai-sub">Google · API 키 필요</div>
-          </div>
-        </div>
-
-        <!-- API key input (hidden for claude) -->
-        <div id="apiKeySection" style="display:none;margin-top:16px;">
-          <div class="form-group">
-            <label class="form-label" id="apiKeyLabel">API Key</label>
-            <input class="form-input" type="password" id="apiKeyInput" placeholder="sk-...">
-          </div>
-        </div>
+      <div class="anl-card" data-key="competitor" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">⚔️</div>
+        <div class="ac-nm">경쟁사 분석</div>
+        <div class="ac-ds">경쟁사 전략·포지셔닝·강약점 비교</div>
       </div>
 
-      <!-- Channels -->
-      <div class="card anim-3">
-        <div class="card-title">03 &nbsp; 알림 채널 설정</div>
-        <div class="channel-grid">
-          <!-- Kakao -->
-          <div class="channel-card" id="kakaoCard" onclick="toggleChannel('kakao')">
-            <div class="ch-check" id="kakaoCheck">✓</div>
-            <div class="ch-header">
-              <div class="ch-icon">💬</div>
-              <div>
-                <div class="ch-name">카카오톡</div>
-                <div class="ch-desc">카카오 계정으로 간편 로그인</div>
-              </div>
-            </div>
-          </div>
-          <!-- Slack -->
-          <div class="channel-card" id="slackCard" onclick="toggleChannel('slack')">
-            <div class="ch-check" id="slackCheck">✓</div>
-            <div class="ch-header">
-              <div class="ch-icon">🏢</div>
-              <div>
-                <div class="ch-name">Slack</div>
-                <div class="ch-desc">Webhook URL로 연동</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Kakao login section -->
-        <div class="kakao-login-section" id="kakaoSection">
-          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;">
-            카카오 계정으로 로그인하면 나에게 카카오톡 알림을 보낼 수 있어요.<br>
-            <strong style="color:var(--gold)">※ 카페24 운영 시 카카오 앱키를 설정 파일에 등록해주세요.</strong>
-          </p>
-          <button class="kakao-login-btn" onclick="kakaoLogin()">
-            <span style="font-size:20px;">🟡</span>
-            카카오 계정으로 로그인
-          </button>
-          <div class="kakao-status" id="kakaoStatus">
-            ✅ 카카오 연동 완료 — <span id="kakaoNickname">사용자</span>님
-          </div>
-        </div>
-
-        <!-- Slack section -->
-        <div class="slack-section" id="slackSection">
-          <div class="form-group" style="margin-top:0">
-            <label class="form-label">Slack Webhook URL</label>
-            <input class="form-input" type="password" id="slackWebhook" placeholder="https://hooks.slack.com/services/...">
-          </div>
-        </div>
+      <div class="anl-card" data-key="comment" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">💬</div>
+        <div class="ac-nm">댓글 / 리뷰 분석</div>
+        <div class="ac-ds">소비자 반응·긍부정 감성·주요 불만</div>
       </div>
 
-      <!-- Schedule -->
-      <div class="card anim-4">
-        <div class="card-title">04 &nbsp; 자동 발송 스케줄</div>
-        <div class="input-row">
-          <div class="form-group">
-            <label class="form-label">매일 발송 시간</label>
-            <input class="form-input" type="time" id="scheduleTime" value="08:30">
-          </div>
-          <div class="form-group">
-            <label class="form-label">발송 언어</label>
-            <select class="form-select" id="reportLang">
-              <option value="ko">🇰🇷 한국어</option>
-              <option value="en">🇺🇸 English</option>
-            </select>
-          </div>
-        </div>
-        <p style="font-size:11px;color:var(--muted);line-height:1.7;">
-          ⚠️ 자동 스케줄은 서버(Node.js cron 등)와 연동 시 실제 동작합니다. 현재는 즉시 테스트 전송 기능을 사용해주세요.
-        </p>
+      <div class="anl-card" data-key="sns" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">📱</div>
+        <div class="ac-nm">SNS 반응 분석</div>
+        <div class="ac-ds">인스타·유튜브·틱톡 반응 및 바이럴 현황</div>
       </div>
 
-      <!-- Run -->
-      <div class="card anim-5">
-        <div class="card-title">05 &nbsp; 실행</div>
-        <button class="btn btn-accent btn-full" onclick="runMonitor()" id="monitorBtn">
-          <span>🔔</span> 즉시 AI 분석 & 채널 발송 테스트
-        </button>
-        <div class="progress-bar" id="monitorProgress"><div class="progress-fill" id="monitorProgressFill"></div></div>
-
-        <!-- AI Result -->
-        <div class="ai-result-box" id="aiResultBox">
-          <div class="ai-result-header">
-            <span>🤖</span>
-            AI BRIEFING OUTPUT
-            <span id="aiModelLabel" style="margin-left:auto;color:var(--muted)"></span>
-          </div>
-          <div class="ai-result-content" id="aiResultContent"></div>
-        </div>
+      <div class="anl-card" data-key="consumer" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">🧠</div>
+        <div class="ac-nm">소비자 심리 분석</div>
+        <div class="ac-ds">구매 동기·페인포인트·니즈 인사이트</div>
       </div>
 
-    </div><!-- /page-monitor -->
+      <div class="anl-card" data-key="promo" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">🎯</div>
+        <div class="ac-nm">프로모션 효과 분석</div>
+        <div class="ac-ds">캠페인 성과·ROAS·개선 포인트</div>
+      </div>
 
-  </main><!-- /main -->
-</div><!-- /wrapper -->
+      <div class="anl-card" data-key="content" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">🎨</div>
+        <div class="ac-nm">콘텐츠 성과 분석</div>
+        <div class="ac-ds">크리에이티브 효율·클릭률·인게이지먼트</div>
+      </div>
 
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
+      <div class="anl-card" data-key="action" onclick="togAnl(this)">
+        <div class="ac-check">✓</div>
+        <div class="ac-ico">🚀</div>
+        <div class="ac-nm">액션 아이템 도출</div>
+        <div class="ac-ds">즉시 실행 가능한 전략 제안·우선순위</div>
+      </div>
+
+    </div>
+    <!-- 선택된 항목 태그 -->
+    <div class="sel-tags" id="selTags"><span class="no-sel">항목을 선택하면 여기에 표시됩니다</span></div>
+  </div>
+
+  <!-- STEP 3: 추가 데이터 입력 -->
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 추가 데이터 · 맥락 입력 <span style="color:var(--muted);font-size:9px;margin-left:4px">(선택)</span></div>
+    <div class="fg"><label class="fl">경쟁사 이름 (쉼표 구분)</label><input class="fi" id="rComp" placeholder="예: 이니스프리, 마몽드, 클리오"></div>
+    <div class="fg"><label class="fl">보유 데이터 / 수치 입력</label><textarea class="fta" id="rData" style="min-height:100px" placeholder="예: 4월 광고비 1200만원, CTR 3.2%, CPC 850원, 전환율 2.1%&#10;인스타 좋아요 평균 340, 유튜브 조회수 12만&#10;주요 댓글: '향이 너무 좋아요', '지속력이 아쉬워요'"></textarea></div>
+    <div class="fg"><label class="fl">보고서 톤 & 스타일</label>
+      <select class="fs" id="rTone">
+        <option value="formal">📋 공식 보고서 (격식체)</option>
+        <option value="brief">⚡ 핵심 요약형 (간결체)</option>
+        <option value="casual">💬 팀 내부 공유용 (친근체)</option>
+        <option value="executive">🎯 경영진 보고용 (임원 요약)</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">보고서 길이</label>
+      <select class="fs" id="rLen">
+        <option value="short">단문 (핵심만 · ~500자)</option>
+        <option value="medium" selected>중간 (표준 분량 · ~1500자)</option>
+        <option value="long">상세 (심층 분석 · ~3000자)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- STEP 4: AI 엔진 -->
+  <div class="card a4">
+    <div class="ct">04 &nbsp; AI 엔진 선택</div>
+    <div class="ai-g" id="waiSel">
+      <div class="aio sel" onclick="selAI('claude','waiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','waiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','waiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+    </div>
+    <div id="wApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="wApiLbl">API Key</label><input class="fi" type="password" id="wApiKey" placeholder="sk-..."></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: 생성 -->
+  <div class="card a5">
+    <div class="ct">05 &nbsp; 보고서 생성</div>
+    <button class="btn bpur bfl" onclick="genReport_write()" id="writeBtn"><span>✍️</span> AI 보고서 자동 작성 시작</button>
+    <div class="pg" id="wp"><div class="pgf" id="wpf"></div></div>
+
+    <!-- Output -->
+    <div class="rpt-out" id="rptOut">
+      <div class="rpt-out-h">
+        <div class="rpt-out-title"><span>📄</span> 완성된 보고서 <span id="rptModelLbl" style="color:var(--muted)"></span></div>
+        <div class="rpt-actions">
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="copyReport()">📋 복사</button>
+          <button class="btn bsm bg" onclick="dlReportExcel()">⬇️ 엑셀 저장</button>
+          <button class="btn bsm bp" onclick="dlReportTxt()">⬇️ TXT 저장</button>
+        </div>
+      </div>
+      <div class="rpt-content" id="rptContent"></div>
+      <div class="copied" id="copiedMsg">복사됨 ✓</div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card a6">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 보고서 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('write')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('write')">삭제</button>
+      </div>
+    </div>
+    <div id="writeHist"></div>
+  </div>
+</div>
+
+</main>
+</div>
+<div class="tc" id="tc"></div>
 
 <!-- ================================================================
-     JAVASCRIPT
+  JAVASCRIPT
 ================================================================ -->
 <script>
-// ───── GLOBAL STATE ─────
-const state = {
+// ─── STATE ───
+const S = {
   files: [],
-  mergedData: null,
-  mergedHeaders: [],
-  selectedAI: 'claude',
-  kakaoConnected: false,
-  kakaoToken: null,
-  channels: { kakao: false, slack: false }
+  merged: null,
+  ai: { maiSel:'claude', waiSel:'claude' },
+  selectedAnl: new Set(),
+  lastMonitorText: '',
+  lastWriteText: ''
 };
 
-// ───── PAGE SWITCH ─────
-function switchPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  btn.classList.add('active');
+// ─── NAV ───
+function go(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('on');
 }
 
-// ───── TOAST ─────
-function toast(msg, type = 'info', duration = 4000) {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-  const div = document.createElement('div');
-  div.className = `toast ${type}`;
-  div.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
-  document.getElementById('toastContainer').appendChild(div);
-  setTimeout(() => { div.style.opacity = '0'; div.style.transform = 'translateX(120%)'; div.style.transition = '0.3s'; setTimeout(() => div.remove(), 300); }, duration);
+// ─── TOAST ───
+function toast(msg, type='i', dur=4000) {
+  const icons={s:'✅',e:'❌',i:'ℹ️'};
+  const d=document.createElement('div');
+  d.className=`toast ${type}`;
+  d.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('tc').appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(120%)';d.style.transition='.3s';setTimeout(()=>d.remove(),300);},dur);
 }
 
-// ───── FILE HANDLING ─────
-function handleFiles(fileList) {
-  Array.from(fileList).forEach(f => {
-    if (!state.files.find(x => x.name === f.name)) state.files.push(f);
-  });
-  renderChips();
-}
-function renderChips() {
-  const c = document.getElementById('fileChips');
-  c.innerHTML = state.files.map((f, i) =>
-    `<div class="file-chip">📄 ${f.name} <button onclick="removeFile(${i})">✕</button></div>`
+// ─── MEMO ───
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=sessionStorage.getItem('gg_memo');
+  if(saved) document.getElementById('memo').value=saved;
+  document.getElementById('memo').addEventListener('input',function(){sessionStorage.setItem('gg_memo',this.value)});
+  const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  document.getElementById('ofn').value='통합리포트_'+today;
+  renderHist('report'); renderHist('monitor'); renderHist('write');
+});
+
+// ─── FILE UPLOAD ───
+function hf(fl){Array.from(fl).forEach(f=>{if(!S.files.find(x=>x.name===f.name))S.files.push(f)});renderChips()}
+function renderChips(){
+  document.getElementById('chips').innerHTML=S.files.map((f,i)=>
+    `<div class="chip">📄 ${f.name} <button onclick="rmFile(${i})">✕</button></div>`
   ).join('');
 }
-function removeFile(i) { state.files.splice(i, 1); renderChips(); }
+function rmFile(i){S.files.splice(i,1);renderChips()}
+function dov(e){e.preventDefault();document.getElementById('dz').classList.add('dov')}
+function dlv(){document.getElementById('dz').classList.remove('dov')}
+function ddr(e){e.preventDefault();document.getElementById('dz').classList.remove('dov');hf(e.dataTransfer.files)}
 
-function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
-function handleDragLeave()  { document.getElementById('dropZone').classList.remove('drag-over'); }
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('dropZone').classList.remove('drag-over');
-  handleFiles(e.dataTransfer.files);
-}
-
-// ───── REPORT GENERATION ─────
-async function generateReport() {
-  if (!state.files.length) { toast('파일을 먼저 업로드해주세요!', 'error'); return; }
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>&nbsp;처리 중...';
-
-  const progress = document.getElementById('reportProgress');
-  const fill = document.getElementById('reportProgressFill');
-  progress.classList.add('visible');
-
-  try {
-    const allData = [];
-    const headers = new Set();
-
-    for (let i = 0; i < state.files.length; i++) {
-      fill.style.width = ((i / state.files.length) * 70) + '%';
-      const data = await readFile(state.files[i]);
-      data.forEach(row => {
-        const renamed = renameColumns(row);
-        renamed['매체'] = state.files[i].name.replace(/\.[^.]+$/, '');
-        allData.push(renamed);
-        Object.keys(renamed).forEach(k => headers.add(k));
-      });
+// ─── REPORT GENERATE ───
+async function genReport(){
+  if(!S.files.length){toast('파일을 먼저 업로드해주세요!','e');return}
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;처리 중...';
+  const pg=document.getElementById('rp');const pf=document.getElementById('rpf');
+  pg.classList.add('on');
+  try{
+    const all=[];
+    for(let i=0;i<S.files.length;i++){
+      pf.style.width=((i/S.files.length)*70)+'%';
+      const rows=await readXLSX(S.files[i]);
+      rows.forEach(r=>{const renamed=renameCol(r);renamed['매체']=S.files[i].name.replace(/\.[^.]+$/,'');all.push(renamed)});
     }
-
-    // Calculate metrics
-    allData.forEach(row => {
-      const clicks = parseNum(row['클릭수']);
-      const imps   = parseNum(row['노출수']);
-      const cost   = parseNum(row['광고비']);
-      if (clicks > 0 && imps > 0) row['CTR(%)'] = ((clicks / imps) * 100).toFixed(2);
-      if (cost > 0 && clicks > 0) row['CPC'] = Math.round(cost / clicks);
+    all.forEach(r=>{
+      const cl=pn(r['클릭수']),im=pn(r['노출수']),co=pn(r['광고비']);
+      if(cl>0&&im>0)r['CTR(%)']=(cl/im*100).toFixed(2);
+      if(co>0&&cl>0)r['CPC']=Math.round(co/cl);
     });
-
-    state.mergedData = allData;
-    state.mergedHeaders = Array.from(headers);
-    fill.style.width = '100%';
-
-    setTimeout(() => {
-      progress.classList.remove('visible');
-      fill.style.width = '0%';
-      showStats(allData);
-      toast('리포트 생성 완료! 🎉', 'success');
-      btn.disabled = false;
-      btn.innerHTML = '<span>🚀</span> 통합 리포트 생성 시작';
-    }, 500);
-
-  } catch (e) {
-    toast('오류: ' + e.message, 'error');
-    btn.disabled = false;
-    btn.innerHTML = '<span>🚀</span> 통합 리포트 생성 시작';
-    progress.classList.remove('visible');
-  }
+    S.merged=all;pf.style.width='100%';
+    // add to history
+    addHist('report',{
+      date:nowStr(),
+      fileName:document.getElementById('ofn').value||'통합리포트',
+      rows:all.length,
+      sources:[...new Set(all.map(r=>r['매체']))].join(', '),
+      data:all
+    });
+    showStats(all);
+    document.getElementById('dlBtn').style.display='';
+    toast('리포트 생성 완료! 🎉','s');
+  }catch(e){toast('오류: '+e.message,'e')}
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},600);
+  btn.disabled=false;btn.innerHTML='<span>🚀</span> 통합 리포트 생성';
 }
 
-function renameColumns(row) {
-  const map = { '지출 금액': '광고비', '비용': '광고비', 'Cost': '광고비', 'Clicks': '클릭수', 'Impressions': '노출수' };
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => { out[map[k] || k] = v; });
-  return out;
+function renameCol(r){
+  const map={'지출 금액':'광고비','비용':'광고비','Cost':'광고비','Clicks':'클릭수','Impressions':'노출수'};
+  const o={};Object.entries(r).forEach(([k,v])=>{o[map[k]||k]=v});return o;
 }
-function parseNum(v) { return isNaN(Number(v)) ? 0 : Number(v); }
+function pn(v){return isNaN(Number(v))?0:Number(v)}
 
-function readFile(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = e => {
-      try {
-        const wb = XLSX.read(e.target.result, { type: 'binary' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        res(XLSX.utils.sheet_to_json(ws, { defval: '' }));
-      } catch(err) { rej(err); }
-    };
-    r.onerror = rej;
-    r.readAsBinaryString(file);
+function readXLSX(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'binary'});res(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}))}catch(err){rej(err)}};
+    r.onerror=rej;r.readAsBinaryString(file);
   });
 }
 
-function showStats(data) {
-  const section = document.getElementById('statsSection');
-  section.style.display = 'block';
-
-  const sources = new Set(data.map(r => r['매체'])).size;
-  const ctrs = data.map(r => parseFloat(r['CTR(%)'])).filter(n => !isNaN(n));
-  const cpcs = data.map(r => parseFloat(r['CPC'])).filter(n => !isNaN(n));
-  const avgCTR = ctrs.length ? (ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2)+'%' : '—';
-  const avgCPC = cpcs.length ? '₩'+Math.round(cpcs.reduce((a,b)=>a+b,0)/cpcs.length).toLocaleString() : '—';
-
-  document.getElementById('statRows').textContent = data.length.toLocaleString();
-  document.getElementById('statSources').textContent = sources;
-  document.getElementById('statCTR').textContent = avgCTR;
-  document.getElementById('statCPC').textContent = avgCPC;
-
-  // Preview table
-  const cols = Object.keys(data[0] || {});
-  const preview = data.slice(0, 10);
-  const html = `<table>
-    <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-    <tbody>${preview.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('')}</tbody>
-  </table>`;
-  document.getElementById('previewTable').innerHTML = html;
+function showStats(data){
+  const sec=document.getElementById('statsArea');sec.style.display='block';
+  const src=new Set(data.map(r=>r['매체'])).size;
+  const ctrs=data.map(r=>parseFloat(r['CTR(%)'])).filter(n=>!isNaN(n));
+  const cpcs=data.map(r=>parseFloat(r['CPC'])).filter(n=>!isNaN(n));
+  document.getElementById('sRow').textContent=data.length.toLocaleString();
+  document.getElementById('sSrc').textContent=src;
+  document.getElementById('sCTR').textContent=ctrs.length?(ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2)+'%':'—';
+  document.getElementById('sCPC').textContent=cpcs.length?'₩'+Math.round(cpcs.reduce((a,b)=>a+b,0)/cpcs.length).toLocaleString():'—';
+  const cols=Object.keys(data[0]||{});
+  document.getElementById('prev').innerHTML=`<table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.slice(0,10).map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-function downloadReport() {
-  if (!state.mergedData) { toast('먼저 리포트를 생성해주세요.', 'error'); return; }
-  const ws = XLSX.utils.json_to_sheet(state.mergedData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, document.getElementById('sheetName').value || '통합데이터');
-
-  // Style header row
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let c = range.s.c; c <= range.e.c; c++) {
-    const addr = XLSX.utils.encode_cell({ r: 0, c });
-    if (!ws[addr]) continue;
-    ws[addr].s = { fill: { fgColor: { rgb: '1B365D' } }, font: { color: { rgb: 'FFFFFF' }, bold: true }, alignment: { horizontal: 'center' } };
-  }
-
-  const name = document.getElementById('outputFileName').value || `통합리포트_${new Date().toISOString().slice(0,10)}`;
-  XLSX.writeFile(wb, name + '.xlsx');
-  toast('리포트 다운로드 시작!', 'success');
+function dlReport(){
+  if(!S.merged){toast('먼저 생성해주세요','e');return}
+  const ws=XLSX.utils.json_to_sheet(S.merged);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,document.getElementById('shn').value||'통합데이터');
+  XLSX.writeFile(wb,(document.getElementById('ofn').value||'통합리포트')+'.xlsx');
+  toast('다운로드 시작!','s');
 }
 
-// ───── AI SELECTOR ─────
-function selectAI(model, el) {
-  document.querySelectorAll('.ai-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  state.selectedAI = model;
-  const sec = document.getElementById('apiKeySection');
-  const lbl = document.getElementById('apiKeyLabel');
-  if (model === 'claude') {
-    sec.style.display = 'none';
-  } else {
-    sec.style.display = 'block';
-    lbl.textContent = model === 'openai' ? 'OpenAI API Key' : 'Google Gemini API Key';
-    document.getElementById('apiKeyInput').placeholder = model === 'openai' ? 'sk-...' : 'AIza...';
+// ─── AI SELECTOR ───
+function selAI(model, gridId, el){
+  document.querySelectorAll(`#${gridId} .aio`).forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  S.ai[gridId]=model;
+  const secId=gridId==='maiSel'?'mApiSec':'wApiSec';
+  const lblId=gridId==='maiSel'?'mApiLbl':'wApiLbl';
+  const keyId=gridId==='maiSel'?'mApiKey':'wApiKey';
+  const sec=document.getElementById(secId);
+  if(model==='claude'){sec.style.display='none'}
+  else{
+    sec.style.display='block';
+    document.getElementById(lblId).textContent=model==='openai'?'OpenAI API Key':'Google Gemini API Key';
+    document.getElementById(keyId).placeholder=model==='openai'?'sk-...':'AIza...';
   }
 }
 
-// ───── CHANNELS ─────
-function toggleChannel(ch) {
-  state.channels[ch] = !state.channels[ch];
-  const card  = document.getElementById(ch + 'Card');
-  const check = document.getElementById(ch + 'Check');
-  if (state.channels[ch]) {
-    card.classList.add('selected');
-    check.textContent = '✓';
-  } else {
-    card.classList.remove('selected');
-    check.textContent = '';
-  }
-  document.getElementById('kakaoSection').classList.toggle('visible', state.channels.kakao);
-  document.getElementById('slackSection').classList.toggle('visible', state.channels.slack);
+// ─── TREND LINKS ───
+function openTrend(platform){
+  const kw=encodeURIComponent((document.getElementById('bkw').value||'마케팅').trim());
+  const urls={
+    google:`https://trends.google.com/trends/explore?q=${kw}&geo=KR`,
+    naver:`https://datalab.naver.com/keyword/trendSearch.naver`,
+    naverNews:`https://search.naver.com/search.naver?where=news&query=${kw}`,
+    youtube:`https://www.youtube.com/results?search_query=${kw}`,
+    instagram:`https://www.instagram.com/explore/tags/${kw}/`,
+    twitter:`https://twitter.com/search?q=${kw}&src=trend_click`
+  };
+  window.open(urls[platform],'_blank');
 }
 
-// ───── KAKAO LOGIN (OAuth) ─────
-// ⚙️ 카페24 배포 시 아래 YOUR_KAKAO_APP_KEY 를 카카오 디벨로퍼스에서 발급받은 JavaScript 앱키로 교체하세요.
-const KAKAO_APP_KEY = 'YOUR_KAKAO_APP_KEY';
-
-function kakaoLogin() {
-  if (KAKAO_APP_KEY === 'YOUR_KAKAO_APP_KEY') {
-    toast('카카오 앱키를 코드에 설정해주세요. (KAKAO_APP_KEY 변수)', 'error', 6000);
-    return;
-  }
-  if (!window.Kakao) {
-    const s = document.createElement('script');
-    s.src = 'https://developers.kakao.com/sdk/js/kakao.js';
-    s.onload = () => { window.Kakao.init(KAKAO_APP_KEY); _doKakaoLogin(); };
-    document.head.appendChild(s);
-  } else {
-    if (!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_APP_KEY);
-    _doKakaoLogin();
-  }
+// ─── MONITOR RUN ───
+async function runMonitor(){
+  const brand=document.getElementById('bkw').value.trim();
+  if(!brand){toast('브랜드 키워드를 입력해주세요','e');return}
+  const btn=document.getElementById('monBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;AI 분석 중...';
+  const pg=document.getElementById('mp');const pf=document.getElementById('mpf');
+  pg.classList.add('on');pf.style.width='20%';
+  const comp=document.getElementById('ckw').value.trim();
+  const extra=document.getElementById('xprompt').value.trim();
+  const model=S.ai['maiSel'];
+  const apiKey=document.getElementById('mApiKey').value.trim();
+  const prompt=buildMonitorPrompt(brand,comp,extra);
+  const box=document.getElementById('monResult');const cont=document.getElementById('monContent');
+  box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
+  document.getElementById('monModelLbl').textContent=model.toUpperCase();
+  pf.style.width='60%';
+  try{
+    const text=await callAI(model,apiKey,prompt);
+    await typewrite(cont,text);
+    S.lastMonitorText=text;
+    document.getElementById('monSaveArea').style.display='block';
+    pf.style.width='100%';
+    toast('AI 분석 완료! 저장 버튼을 눌러 기록하세요.','s');
+  }catch(e){toast('오류: '+e.message,'e');cont.textContent='분석 오류: '+e.message}
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false;btn.innerHTML='<span>🔔</span> AI 즉시 분석 시작';
 }
 
-function _doKakaoLogin() {
-  window.Kakao.Auth.login({
-    scope: 'profile_nickname,talk_message',
-    success: function(auth) {
-      state.kakaoToken = auth.access_token;
-      window.Kakao.API.request({
-        url: '/v2/user/me',
-        success: function(res) {
-          const nick = res.kakao_account?.profile?.nickname || '사용자';
-          state.kakaoConnected = true;
-          document.getElementById('kakaoNickname').textContent = nick;
-          document.getElementById('kakaoStatus').classList.add('connected');
-          toast(`카카오 로그인 성공! 안녕하세요 ${nick}님 👋`, 'success');
-        }
-      });
-    },
-    fail: function(err) {
-      toast('카카오 로그인 실패: ' + (err.error_description || err.error), 'error');
-    }
-  });
-}
-
-// ───── MONITOR / AI CALL ─────
-async function runMonitor() {
-  const brand = document.getElementById('brandKw').value.trim();
-  const comp  = document.getElementById('compKw').value.trim();
-  const extra = document.getElementById('extraPrompt').value.trim();
-
-  if (!brand) { toast('담당 브랜드 키워드를 입력해주세요.', 'error'); return; }
-
-  const btn = document.getElementById('monitorBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>&nbsp;AI 분석 중...';
-
-  const prog = document.getElementById('monitorProgress');
-  const fill = document.getElementById('monitorProgressFill');
-  prog.classList.add('visible');
-  fill.style.width = '20%';
-
-  const resultBox = document.getElementById('aiResultBox');
-  const resultContent = document.getElementById('aiResultContent');
-  resultBox.classList.add('visible');
-  resultContent.innerHTML = '<span class="typing-cursor"></span>';
-  document.getElementById('aiModelLabel').textContent = state.selectedAI.toUpperCase();
-
-  const prompt = buildPrompt(brand, comp, extra);
-
-  try {
-    fill.style.width = '50%';
-
-    if (state.selectedAI === 'claude') {
-      await callClaudeAPI(prompt, resultContent, fill);
-    } else if (state.selectedAI === 'openai') {
-      await callOpenAI(prompt, resultContent, fill);
-    } else {
-      await callGemini(prompt, resultContent, fill);
-    }
-
-    fill.style.width = '100%';
-    setTimeout(() => { prog.classList.remove('visible'); fill.style.width = '0%'; }, 600);
-
-    // Send to channels
-    const text = resultContent.textContent;
-    if (state.channels.kakao && state.kakaoConnected) await sendKakao(text);
-    if (state.channels.slack) await sendSlack(text);
-
-    toast('AI 분석 & 발송 완료! 🎯', 'success');
-  } catch(e) {
-    toast('오류: ' + e.message, 'error');
-    resultContent.textContent = '분석 중 오류가 발생했습니다: ' + e.message;
-    prog.classList.remove('visible');
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<span>🔔</span> 즉시 AI 분석 & 채널 발송 테스트';
-}
-
-function buildPrompt(brand, comp, extra) {
-  const today = new Date().toLocaleDateString('ko-KR');
-  return `당신은 최고의 마케터입니다. 오늘(${today}) 기준 아래 내용을 분석해주세요.
+function buildMonitorPrompt(brand,comp,extra){
+  const today=new Date().toLocaleDateString('ko-KR');
+  return `당신은 최고의 마케팅 전략가입니다. ${today} 기준으로 아래 브랜드에 대한 마케팅 인텔리전스 브리핑을 작성해주세요.
 
 📌 담당 브랜드: ${brand}
-⚡ 경쟁사: ${comp}
-${extra ? '📝 추가 분석 요청: ' + extra : ''}
+⚡ 경쟁사: ${comp||'없음'}
+${extra?'📝 추가 요청: '+extra:''}
 
-아래 형식으로 한국어 마케팅 브리핑을 작성해주세요:
+아래 형식으로 한국어 브리핑을 작성해주세요:
 
-📢 오늘의 마케팅 브리핑 — ${today}
+📢 마케팅 인텔리전스 브리핑 — ${today}
 
-🔥 [${brand}] 브랜드 동향 분석
-• (최근 SNS 반응 및 트렌드 추이)
-• (소비자 심리 및 반응)
+🔥 [${brand}] 브랜드 동향
+• SNS·검색 트렌드 분석
+• 소비자 반응 및 키워드
 
-⚡ [경쟁사 동향: ${comp}]
-• (경쟁사 최신 마케팅 활동)
-• (주목할 만한 변화)
+⚡ [경쟁사 동향${comp?': '+comp:''}]
+• 주요 마케팅 활동 및 변화
 
-💡 오늘의 마케팅 인사이트 & 액션 아이템
-• (즉시 실행 가능한 제안)
+💡 인사이트 & 오늘의 액션 아이템
+• 즉시 실행 가능한 제안 3가지
 
-이모지를 풍부하게 써서 읽기 편하고 활기차게 작성해주세요.`;
+이모지를 활용해 읽기 쉽고 활기차게 작성해주세요.`;
 }
 
-// ── Claude (built-in via Anthropic API) ──
-async function callClaudeAPI(prompt, el, fill) {
-  fill.style.width = '70%';
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }]
-    })
+function saveMonitorHist(){
+  if(!S.lastMonitorText){toast('분석 결과가 없습니다','e');return}
+  addHist('monitor',{
+    date:nowStr(),
+    brand:document.getElementById('bkw').value,
+    competitor:document.getElementById('ckw').value,
+    model:S.ai['maiSel'],
+    content:S.lastMonitorText
   });
-  if (!res.ok) throw new Error('Claude API 오류: ' + res.status);
-  const data = await res.json();
-  const text = data.content.map(b => b.text || '').join('');
-  await typewriterEffect(el, text);
+  toast('히스토리에 저장되었습니다! 💾','s');
 }
 
-// ── OpenAI ──
-async function callOpenAI(prompt, el, fill) {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key) throw new Error('OpenAI API 키를 입력해주세요.');
-  fill.style.width = '70%';
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-    body: JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'user', content: prompt }], max_tokens: 1000 })
-  });
-  if (!res.ok) throw new Error('OpenAI API 오류: ' + res.status);
-  const data = await res.json();
-  await typewriterEffect(el, data.choices[0].message.content);
+// ─── ANALYSIS TOGGLE ───
+function togAnl(el){
+  el.classList.toggle('on');
+  const key=el.dataset.key;
+  if(el.classList.contains('on')) S.selectedAnl.add(key);
+  else S.selectedAnl.delete(key);
+  renderSelTags();
 }
 
-// ── Gemini ──
-async function callGemini(prompt, el, fill) {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key) throw new Error('Gemini API 키를 입력해주세요.');
-  fill.style.width = '70%';
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  });
-  if (!res.ok) throw new Error('Gemini API 오류: ' + res.status);
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답 없음';
-  await typewriterEffect(el, text);
+const ANL_LABELS={
+  market:'📊 시장 현황',trend:'📈 트렌드',competitor:'⚔️ 경쟁사',
+  comment:'💬 댓글/리뷰',sns:'📱 SNS 반응',consumer:'🧠 소비자 심리',
+  promo:'🎯 프로모션 효과',content:'🎨 콘텐츠 성과',action:'🚀 액션 아이템'
+};
+
+function renderSelTags(){
+  const c=document.getElementById('selTags');
+  if(S.selectedAnl.size===0){c.innerHTML='<span class="no-sel">항목을 선택하면 여기에 표시됩니다</span>';return}
+  c.innerHTML=[...S.selectedAnl].map(k=>`<div class="stag">${ANL_LABELS[k]}</div>`).join('');
 }
 
-// Typewriter effect
-function typewriterEffect(el, text) {
-  return new Promise(res => {
-    el.textContent = '';
-    let i = 0;
-    const cursor = document.createElement('span');
-    cursor.className = 'typing-cursor';
-    el.appendChild(cursor);
-    const iv = setInterval(() => {
-      if (i >= text.length) { clearInterval(iv); cursor.remove(); res(); return; }
-      el.insertBefore(document.createTextNode(text[i++]), cursor);
-    }, 12);
-  });
-}
+// ─── WRITE REPORT ───
+async function genReport_write(){
+  if(S.selectedAnl.size===0){toast('분석 항목을 최소 1개 이상 선택해주세요!','e');return}
+  const title=document.getElementById('rTitle').value.trim()||'마케팅 분석 보고서';
+  const brand=document.getElementById('rBrand').value.trim();
+  const period=document.getElementById('rPeriod').value.trim();
+  const author=document.getElementById('rAuthor').value.trim();
+  const bg=document.getElementById('rBg').value.trim();
+  const comp=document.getElementById('rComp').value.trim();
+  const data=document.getElementById('rData').value.trim();
+  const tone=document.getElementById('rTone').value;
+  const len=document.getElementById('rLen').value;
+  const model=S.ai['waiSel'];
+  const apiKey=document.getElementById('wApiKey').value.trim();
 
-// ───── KAKAO SEND ─────
-async function sendKakao(text) {
-  if (!state.kakaoToken) { toast('카카오 로그인이 필요합니다.', 'error'); return; }
-  try {
-    await window.Kakao.API.request({
-      url: '/v2/api/talk/memo/default/send',
-      data: {
-        template_object: {
-          object_type: 'text',
-          text: text.slice(0, 500),
-          link: { mobile_web_url: 'https://kakao.com', web_url: 'https://kakao.com' }
-        }
-      }
+  const btn=document.getElementById('writeBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;AI 보고서 작성 중...';
+  const pg=document.getElementById('wp');const pf=document.getElementById('wpf');
+  pg.classList.add('on');pf.style.width='15%';
+
+  const prompt=buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections:[...S.selectedAnl]});
+  pf.style.width='50%';
+
+  const box=document.getElementById('rptOut');const cont=document.getElementById('rptContent');
+  box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
+  document.getElementById('rptModelLbl').textContent='via '+model.toUpperCase();
+
+  try{
+    const text=await callAI(model,apiKey,prompt);
+    await typewrite(cont,text);
+    S.lastWriteText=text;
+    pf.style.width='100%';
+    addHist('write',{
+      date:nowStr(), title, brand, period,
+      sections:[...S.selectedAnl].map(k=>ANL_LABELS[k]).join(' · '),
+      model, content:text
     });
-    toast('카카오톡 발송 완료! 💬', 'success');
-  } catch(e) {
-    toast('카카오톡 발송 실패: ' + (e.message || ''), 'error');
+    toast('보고서 작성 완료! 🎉','s');
+  }catch(e){toast('오류: '+e.message,'e');cont.textContent='작성 오류: '+e.message}
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false;btn.innerHTML='<span>✍️</span> AI 보고서 자동 작성 시작';
+}
+
+function buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections}){
+  const toneMap={
+    formal:'격식체 공식 보고서 문체로',
+    brief:'핵심만 간결하게 요약하는 문체로',
+    casual:'팀 내부 공유에 적합한 친근한 문체로',
+    executive:'경영진·임원 보고에 적합한 핵심 요약 문체로'
+  };
+  const lenMap={short:'약 500자 이내로 간결하게',medium:'약 1500자 분량으로 표준적으로',long:'약 3000자 이상 심층 분석으로'};
+  const sectionInstructions=sections.map(k=>{
+    const m={
+      market:'## 📊 시장 현황 분석\n- 시장 규모 및 성장 트렌드\n- 주요 플레이어 현황\n- 시장 기회 및 위협 요인',
+      trend:'## 📈 트렌드 분석\n- 최근 소비 트렌드 변화\n- 핵심 키워드 및 관심도\n- 떠오르는 트렌드 및 시사점',
+      competitor:`## ⚔️ 경쟁사 분석${comp?' ('+comp+')':''}\n- 경쟁사 주요 전략 및 포지셔닝\n- 강점·약점 비교 분석\n- 차별화 기회`,
+      comment:'## 💬 댓글 / 리뷰 분석\n- 주요 긍정 반응 및 키워드\n- 부정 반응 및 개선 요구사항\n- 감성 분석 요약',
+      sns:'## 📱 SNS 반응 분석\n- 주요 플랫폼별 반응 현황\n- 바이럴 콘텐츠 특징\n- 인게이지먼트 인사이트',
+      consumer:'## 🧠 소비자 심리 분석\n- 핵심 구매 동기\n- 페인포인트 및 니즈\n- 소비자 여정 인사이트',
+      promo:'## 🎯 프로모션 효과 분석\n- 캠페인 성과 요약\n- ROAS 및 효율 분석\n- 개선 포인트 및 제안',
+      content:'## 🎨 콘텐츠 성과 분석\n- 크리에이티브 효율 분석\n- 클릭률·도달률·인게이지먼트\n- 고성과 콘텐츠 특징',
+      action:'## 🚀 액션 아이템 도출\n- 즉시 실행 가능한 전략 제안 (우선순위 순)\n- 단기/중기 목표 설정\n- 담당자별 실행 체크리스트'
+    };
+    return m[k];
+  }).join('\n\n');
+
+  return `당신은 10년 경력의 전문 마케팅 컨설턴트입니다.
+아래 정보를 바탕으로 ${toneMap[tone]} 전문 마케팅 보고서를 ${lenMap[len]} 작성해주세요.
+
+─────────────────────────────
+보고서 제목: ${title}
+${brand?'브랜드/제품: '+brand:''}
+${period?'분석 기간: '+period:''}
+${author?'작성자: '+author:''}
+${bg?'배경/목적: '+bg:''}
+${data?'보유 데이터:\n'+data:''}
+─────────────────────────────
+
+아래 항목들을 순서대로 포함하여 작성해주세요:
+
+# ${title}
+${period?'**기간:** '+period+'\n':''}${author?'**작성:** '+author+'\n':''}
+${bg?'## 📌 보고서 개요\n'+bg+'\n\n':''}
+${sectionInstructions}
+
+## ✅ 종합 결론
+핵심 인사이트를 3줄로 요약하고, 다음 스텝을 제안해주세요.
+
+각 섹션은 명확한 헤더로 구분하고, 불릿 포인트를 활용해 가독성 있게 작성해주세요.`;
+}
+
+// ─── AI CALL ───
+async function callAI(model, apiKey, prompt){
+  if(model==='claude'){
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok)throw new Error('Claude API 오류 '+res.status);
+    const d=await res.json();
+    return d.content.map(b=>b.text||'').join('');
+  }
+  if(model==='openai'){
+    if(!apiKey)throw new Error('OpenAI API 키를 입력해주세요');
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:prompt}],max_tokens:2000})
+    });
+    if(!res.ok)throw new Error('OpenAI API 오류 '+res.status);
+    const d=await res.json();return d.choices[0].message.content;
+  }
+  if(model==='gemini'){
+    if(!apiKey)throw new Error('Gemini API 키를 입력해주세요');
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:2000}})
+    });
+    if(!res.ok)throw new Error('Gemini API 오류 '+res.status);
+    const d=await res.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||'응답 없음';
   }
 }
 
-// ───── SLACK SEND ─────
-async function sendSlack(text) {
-  const url = document.getElementById('slackWebhook').value.trim();
-  if (!url) { toast('Slack Webhook URL을 입력해주세요.', 'error'); return; }
-  try {
-    // NOTE: 실제 카페24 배포 환경에서는 CORS 문제로 서버사이드 프록시를 거쳐야 합니다.
-    // 아래는 프록시 없이 직접 호출하는 예시입니다.
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: '📢 *마케팅 AI 브리핑*\n\n' + text })
-    });
-    toast('Slack 발송 완료! 🏢', 'success');
-  } catch(e) {
-    toast('Slack 발송 실패 (CORS 가능성 있음)', 'error');
-  }
+// ─── TYPEWRITER ───
+function typewrite(el,text){
+  return new Promise(res=>{
+    el.textContent='';let i=0;
+    const cur=document.createElement('span');cur.className='cur';el.appendChild(cur);
+    const iv=setInterval(()=>{
+      if(i>=text.length){clearInterval(iv);cur.remove();res();return}
+      el.insertBefore(document.createTextNode(text[i++]),cur);
+    },8);
+  });
 }
 
-// ───── INIT ─────
-document.addEventListener('DOMContentLoaded', () => {
-  const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  document.getElementById('outputFileName').value = `통합리포트_${today}`;
-
-  // Memo persistence (sessionStorage)
-  const saved = sessionStorage.getItem('gogup_memo');
-  if (saved) document.getElementById('sidebarMemo').value = saved;
-  document.getElementById('sidebarMemo').addEventListener('input', function() {
-    sessionStorage.setItem('gogup_memo', this.value);
+// ─── COPY ───
+function copyReport(){
+  const t=document.getElementById('rptContent').textContent;
+  navigator.clipboard.writeText(t).then(()=>{
+    const m=document.getElementById('copiedMsg');
+    m.classList.add('show');setTimeout(()=>m.classList.remove('show'),2000);
   });
-});
+}
+
+// ─── DOWNLOAD TXT ───
+function dlReportTxt(){
+  if(!S.lastWriteText){toast('보고서를 먼저 생성해주세요','e');return}
+  const title=document.getElementById('rTitle').value||'보고서';
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(S.lastWriteText);
+  a.download=title+'_'+nowStr(true)+'.txt';a.click();
+  toast('TXT 다운로드!','s');
+}
+
+// ─── DOWNLOAD REPORT EXCEL ───
+function dlReportExcel(){
+  if(!S.lastWriteText){toast('보고서를 먼저 생성해주세요','e');return}
+  const title=document.getElementById('rTitle').value||'보고서';
+  const wb=XLSX.utils.book_new();
+  const lines=S.lastWriteText.split('\n').map(l=>({내용:l}));
+  const ws=XLSX.utils.json_to_sheet([
+    {내용:'═══ '+title+' ═══'},
+    {내용:'작성일시: '+nowStr()},
+    {내용:'분석항목: '+[...S.selectedAnl].map(k=>ANL_LABELS[k]).join(' · ')},
+    {내용:''},
+    ...lines
+  ]);
+  ws['!cols']=[{wch:120}];
+  XLSX.utils.book_append_sheet(wb,ws,'보고서');
+  XLSX.writeFile(wb,title+'_'+nowStr(true)+'.xlsx');
+  toast('엑셀 저장 완료!','s');
+}
+
+// ─── HISTORY ───
+function nowStr(file=false){
+  const d=new Date();
+  const date=d.toLocaleDateString('ko-KR');
+  const time=d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  if(file)return d.toISOString().slice(0,16).replace(/[-T:]/g,'');
+  return date+' '+time;
+}
+
+function getHist(key){
+  try{return JSON.parse(localStorage.getItem('gg_hist_'+key)||'[]')}catch{return[]}
+}
+function setHist(key,arr){localStorage.setItem('gg_hist_'+key,JSON.stringify(arr))}
+
+function addHist(key,item){
+  const arr=getHist(key);
+  arr.unshift(item);
+  if(arr.length>50)arr.splice(50);
+  setHist(key,arr);
+  renderHist(key);
+}
+
+function renderHist(key){
+  const el=document.getElementById(key+'Hist');
+  if(!el)return;
+  const arr=getHist(key);
+  if(!arr.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)">저장된 기록이 없습니다</div>';return}
+  el.innerHTML=`<div class="tw"><table>
+    <thead><tr>${getHistCols(key).map(c=>`<th>${c}</th>`).join('')}<th>ACTION</th></tr></thead>
+    <tbody>${arr.map((item,i)=>`<tr>${getHistCols(key).map(c=>getHistVal(key,item,c)).map(v=>`<td>${v}</td>`).join('')}
+    <td><button class="btn bsm" style="background:rgba(78,143,255,.1);color:var(--accent2);border:1px solid rgba(78,143,255,.2);padding:4px 10px;font-size:10px" onclick="dlHistItem('${key}',${i})">⬇️</button></td></tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function getHistCols(key){
+  if(key==='report')return['DATE','FILE','ROWS','SOURCES'];
+  if(key==='monitor')return['DATE','BRAND','COMPETITOR','MODEL'];
+  if(key==='write')return['DATE','TITLE','BRAND','SECTIONS','MODEL'];
+}
+function getHistVal(key,item,col){
+  const map={
+    report:{DATE:'date',FILE:'fileName',ROWS:'rows',SOURCES:'sources'},
+    monitor:{DATE:'date',BRAND:'brand',COMPETITOR:'competitor',MODEL:'model'},
+    write:{DATE:'date',TITLE:'title',BRAND:'brand',SECTIONS:'sections',MODEL:'model'}
+  };
+  return item[map[key][col]]||'—';
+}
+
+function dlHistItem(key,idx){
+  const item=getHist(key)[idx];
+  if(!item)return;
+  const wb=XLSX.utils.book_new();
+  if(key==='report'&&item.data){
+    const ws=XLSX.utils.json_to_sheet(item.data);
+    XLSX.utils.book_append_sheet(wb,ws,'데이터');
+  } else {
+    const lines=(item.content||'').split('\n').map(l=>({내용:l}));
+    const ws=XLSX.utils.json_to_sheet([{내용:'저장일시: '+item.date},{내용:''},...lines]);
+    ws['!cols']=[{wch:120}];
+    XLSX.utils.book_append_sheet(wb,ws,'내용');
+  }
+  XLSX.writeFile(wb,(item.fileName||item.title||item.brand||key)+'_'+nowStr(true)+'.xlsx');
+  toast('다운로드 완료!','s');
+}
+
+function dlAllHist(key){
+  const arr=getHist(key);
+  if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  const wb=XLSX.utils.book_new();
+  if(key==='report'){
+    arr.forEach((item,i)=>{
+      if(item.data){const ws=XLSX.utils.json_to_sheet(item.data);XLSX.utils.book_append_sheet(wb,ws,(i+1)+'_'+item.date.slice(0,10))}
+    });
+  } else {
+    const rows=arr.map(item=>({
+      날짜:item.date,
+      ...(key==='monitor'?{브랜드:item.brand,경쟁사:item.competitor,모델:item.model,내용:(item.content||'').slice(0,500)}:{}),
+      ...(key==='write'?{제목:item.title,브랜드:item.brand,분석항목:item.sections,모델:item.model,내용:(item.content||'').slice(0,500)}:{})
+    }));
+    const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:20},{wch:20},{wch:30},{wch:15},{wch:80}];
+    XLSX.utils.book_append_sheet(wb,ws,'전체기록');
+  }
+  XLSX.writeFile(wb,'GOGUP_'+key+'_history_'+nowStr(true)+'.xlsx');
+  toast('전체 히스토리 다운로드!','s');
+}
+
+function clearHist(key){
+  if(!confirm('히스토리를 전부 삭제할까요?'))return;
+  localStorage.removeItem('gg_hist_'+key);
+  renderHist(key);
+  toast('삭제 완료','i');
+}
 </script>
-
-<!--
-=================================================================
-  카페24 배포 가이드
-=================================================================
-  1. 이 HTML 파일 전체를 카페24 스마트 디자인 편집기에 붙여넣기
-     또는 독립 HTML 파일로 FTP 업로드 후 링크 연결
-  
-  2. 카카오톡 연동 설정:
-     - https://developers.kakao.com 에서 앱 생성
-     - JavaScript 앱키를 KAKAO_APP_KEY 변수에 입력
-     - 카카오 플랫폼에서 도메인 등록 (예: your-shop.cafe24.com)
-     - 카카오 로그인 활성화 후 Redirect URI 설정
-  
-  3. Slack 연동:
-     - Slack 워크스페이스 → Apps → Incoming Webhooks 활성화
-     - Webhook URL 복사 후 툴에서 입력
-     - CORS 문제 발생 시 카페24 서버 스크립트로 프록시 구성 필요
-  
-  4. Claude AI는 별도 설정 없이 내장 사용 가능
-     OpenAI / Gemini 사용 시 해당 API 키만 입력하면 됩니다.
-=================================================================
--->
-
 </body>
 </html>

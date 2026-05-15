@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>광고마케터 올인원 툴 ✦</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+  :root {
+    --navy-deep:   #080E1A;
+    --navy-mid:    #0D1B35;
+    --navy-card:   #111D38;
+    --navy-border: #1E3260;
+    --accent:      #4DFFB0;
+    --accent2:     #5B8FFF;
+    --accent3:     #FF6BBA;
+    --gold:        #FFD166;
+    --white:       #F0F4FF;
+    --muted:       #7A93C0;
+    --danger:      #FF4D6D;
+    --success:     #4DFFB0;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body:    'Noto Sans KR', sans-serif;
+    --font-mono:    'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy-deep);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BG noise texture ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── Animated gradient orbs ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent2); top: -200px; left: -100px; animation-duration: 20s; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent3); bottom: -150px; right: -100px; animation-duration: 25s; animation-delay: -8s; }
+  .orb-3 { width: 300px; height: 300px; background: var(--accent); top: 40%; left: 50%; animation-duration: 15s; animation-delay: -4s; }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(40px, 60px) scale(1.15); }
+  }
+
+  /* ── Layout ── */
+  .wrapper { position: relative; z-index: 1; display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #0A1220 0%, #0D1B35 100%);
+    border-right: 1px solid var(--navy-border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 32px 24px 24px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .sidebar-logo .logo-tag {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    margin-bottom: 6px;
+  }
+  .sidebar-logo h1 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--white) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar-logo .version {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+
+  .nav-section { padding: 20px 16px 8px; }
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+  .nav-btn:hover { background: rgba(77,255,176,0.05); color: var(--white); border-color: var(--navy-border); }
+  .nav-btn.active { background: rgba(77,255,176,0.08); color: var(--accent); border-color: rgba(77,255,176,0.2); }
+  .nav-btn.active::before { transform: scaleY(1); }
+  .nav-btn .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+  .sidebar-memo {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--navy-border);
+  }
+  .memo-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .memo-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  .memo-textarea:focus { border-color: var(--accent2); }
+  .memo-textarea::placeholder { color: var(--muted); }
+
+  /* ── Main Content ── */
+  .main { flex: 1; padding: 40px 48px; overflow-x: hidden; }
+
+  /* ── Page Header ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .page-header-text .eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .page-header-text h2 {
+    font-family: var(--font-display);
+    font-size: 48px;
+    letter-spacing: 3px;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--white), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-header-text p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 8px;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(77,255,176,0.08);
+    border: 1px solid rgba(77,255,176,0.2);
+    border-radius: 99px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(91,143,255,0.03) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .card:hover { border-color: rgba(91,143,255,0.35); box-shadow: 0 8px 40px rgba(91,143,255,0.08); }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--navy-border), transparent);
+  }
+
+  /* ── Upload Zone ── */
+  .upload-zone {
+    border: 2px dashed var(--navy-border);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.01);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent2);
+    background: rgba(91,143,255,0.06);
+  }
+  .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { font-size: 48px; margin-bottom: 12px; }
+  .upload-zone h3 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .upload-zone p { font-size: 12px; color: var(--muted); }
+
+  .file-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .file-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: rgba(77,255,176,0.08);
+    border: 1px solid rgba(77,255,176,0.2);
+    border-radius: 99px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  .file-chip button {
+    background: none; border: none; color: var(--accent); cursor: pointer;
+    font-size: 12px; line-height: 1; padding: 0; margin-left: 2px;
+  }
+
+  /* ── Inputs ── */
+  .form-group { margin-bottom: 18px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--navy-border);
+    border-radius: 10px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(91,143,255,0.12);
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-select { cursor: pointer; }
+  .form-select option { background: var(--navy-mid); }
+  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ── AI Model Selector ── */
+  .ai-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ai-option {
+    padding: 16px;
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+  .ai-option:hover { border-color: rgba(91,143,255,0.4); }
+  .ai-option.selected { border-color: var(--accent2); background: rgba(91,143,255,0.1); }
+  .ai-option .ai-icon { font-size: 28px; margin-bottom: 8px; }
+  .ai-option .ai-name { font-size: 12px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .ai-option .ai-sub  { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+  .ai-option .ai-badge {
+    position: absolute; top: 8px; right: 8px;
+    font-size: 8px; letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 99px;
+    font-family: var(--font-mono);
+    background: rgba(77,255,176,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(77,255,176,0.3);
+  }
+
+  /* ── Channel Cards ── */
+  .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .channel-card {
+    padding: 20px;
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+  .channel-card:hover { border-color: rgba(91,143,255,0.4); }
+  .channel-card.selected { border-color: var(--accent3); background: rgba(255,107,186,0.08); }
+  .channel-card .ch-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .channel-card .ch-icon { font-size: 28px; }
+  .channel-card .ch-name { font-size: 14px; font-weight: 700; color: var(--white); }
+  .channel-card .ch-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .channel-card .ch-check {
+    position: absolute; top: 12px; right: 12px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--navy-border);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    transition: all 0.2s;
+  }
+  .channel-card.selected .ch-check { background: var(--accent3); border-color: var(--accent3); color: white; }
+
+  /* ── Kakao Login ── */
+  .kakao-login-section {
+    display: none;
+    margin-top: 16px;
+    padding: 20px;
+    background: rgba(254,229,0,0.04);
+    border: 1px solid rgba(254,229,0,0.2);
+    border-radius: 12px;
+  }
+  .kakao-login-section.visible { display: block; }
+  .kakao-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: #FEE500;
+    color: #191919;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(254,229,0,0.2);
+  }
+  .kakao-login-btn:hover { background: #F5DC00; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(254,229,0,0.3); }
+  .kakao-login-btn:active { transform: translateY(0); }
+  .kakao-status {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    display: none;
+  }
+  .kakao-status.connected {
+    display: block;
+    background: rgba(77,255,176,0.08);
+    border: 1px solid rgba(77,255,176,0.2);
+    color: var(--accent);
+  }
+
+  /* ── Slack section ── */
+  .slack-section { display: none; margin-top: 16px; }
+  .slack-section.visible { display: block; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), #8B5CF6);
+    color: white;
+    box-shadow: 0 4px 20px rgba(91,143,255,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(91,143,255,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), #00D68F);
+    color: var(--navy-deep);
+    box-shadow: 0 4px 20px rgba(77,255,176,0.25);
+  }
+  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(77,255,176,0.35); }
+  .btn-full { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* ── Progress ── */
+  .progress-bar {
+    height: 4px;
+    background: var(--navy-border);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 16px 0;
+    display: none;
+  }
+  .progress-bar.visible { display: block; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Toast ── */
+  .toast-container {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 280px;
+    animation: slideIn 0.3s ease both;
+    pointer-events: all;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.success { background: #0D2E1F; border: 1px solid rgba(77,255,176,0.3); color: var(--accent); }
+  .toast.error   { background: #2E0D14; border: 1px solid rgba(255,77,109,0.3); color: var(--danger); }
+  .toast.info    { background: var(--navy-card); border: 1px solid var(--navy-border); color: var(--white); }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ── Preview Table ── */
+  .table-wrapper { overflow-x: auto; border-radius: 10px; border: 1px solid var(--navy-border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: var(--navy-mid); }
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--navy-border);
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid rgba(30,50,96,0.5); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(91,143,255,0.04); }
+  tbody td { padding: 10px 16px; color: var(--white); font-size: 12px; white-space: nowrap; }
+  tbody tr:last-child { border-bottom: none; }
+
+  /* ── AI Chat Preview ── */
+  .ai-result-box {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    display: none;
+  }
+  .ai-result-box.visible { display: block; }
+  .ai-result-header {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; font-family: var(--font-mono);
+    letter-spacing: 2px; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .ai-result-content {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--white);
+    white-space: pre-wrap;
+  }
+  .typing-cursor {
+    display: inline-block;
+    width: 2px; height: 14px;
+    background: var(--accent);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* ── Stats Row ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    padding: 20px;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 14px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .stat-card .s-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; margin-bottom: 8px; }
+  .stat-card .s-value { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; }
+  .stat-card .s-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .color-green { color: var(--accent); }
+  .color-blue  { color: var(--accent2); }
+  .color-pink  { color: var(--accent3); }
+  .color-gold  { color: var(--gold); }
+
+  /* ── Page visibility ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anim-1 { animation-delay: 0.05s; }
+  .anim-2 { animation-delay: 0.12s; }
+  .anim-3 { animation-delay: 0.19s; }
+  .anim-4 { animation-delay: 0.26s; }
+  .anim-5 { animation-delay: 0.33s; }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--navy-border); margin: 24px 0; }
+
+  /* ── Loading Spinner ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { width: 220px; }
+    .main { padding: 24px 20px; }
+    .input-row { grid-template-columns: 1fr; }
+    .ai-selector { grid-template-columns: 1fr; }
+    .channel-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="wrapper">
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-tag">✦ MARKETING OS</div>
+      <h1>GOGUP<br>TOOL</h1>
+      <div class="version">v2.0 — Premium Edition</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">도구</div>
+      <button class="nav-btn active" onclick="switchPage('report', this)">
+        <span class="icon">📊</span>
+        <span>리포트 자동화</span>
+      </button>
+      <button class="nav-btn" onclick="switchPage('monitor', this)">
+        <span class="icon">🤖</span>
+        <span>트렌드 모니터링</span>
+      </button>
+    </div>
+
+    <div class="sidebar-memo">
+      <div class="memo-label">✏ 실시간 메모장</div>
+      <textarea class="memo-textarea" id="sidebarMemo" placeholder="아이디어, 할 일, 인사이트를 여기에 메모해요 ✍️"></textarea>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+
+    <!-- ════════════════════════════════════
+         PAGE 1: REPORT
+    ════════════════════════════════════ -->
+    <div class="page active" id="page-report">
+      <div class="page-header">
+        <div class="page-header-text">
+          <div class="eyebrow">✦ 01 — Report Automation</div>
+          <h2>REPORT<br>HUB</h2>
+          <p>여러 매체의 Raw 데이터를 한 번에 병합하고 정제합니다. CTR·CPC 자동 계산 포함.</p>
+        </div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          READY
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="card anim-1">
+        <div class="card-title">01 &nbsp; 데이터 업로드</div>
+        <div class="upload-zone" id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv" onchange="handleFiles(this.files)">
+          <div class="upload-icon">📂</div>
+          <h3>파일을 여기에 드래그하거나 클릭해서 선택</h3>
+          <p>Excel (.xlsx, .xls), CSV 파일 — 다중 선택 가능</p>
+        </div>
+        <div class="file-chips" id="fileChips"></div>
+      </div>
+
+      <!-- Save Settings -->
+      <div class="card anim-2">
+        <div class="card-title">02 &nbsp; 저장 설정</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label class="form-label">저장할 파일 이름</label>
+            <input class="form-input" type="text" id="outputFileName" placeholder="통합리포트_20260515">
+          </div>
+          <div class="form-group">
+            <label class="form-label">시트 이름</label>
+            <input class="form-input" type="text" id="sheetName" value="통합데이터" placeholder="통합데이터">
+          </div>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="card anim-3">
+        <div class="card-title">03 &nbsp; 리포트 생성</div>
+        <button class="btn btn-primary btn-full" onclick="generateReport()" id="genBtn">
+          <span>🚀</span> 통합 리포트 생성 시작
+        </button>
+        <div class="progress-bar" id="reportProgress"><div class="progress-fill" id="reportProgressFill"></div></div>
+      </div>
+
+      <!-- Stats (shown after generation) -->
+      <div id="statsSection" style="display:none">
+        <div class="stats-row anim-1">
+          <div class="stat-card"><div class="s-label">총 레코드</div><div class="s-value color-blue" id="statRows">—</div><div class="s-sub">merged rows</div></div>
+          <div class="stat-card"><div class="s-label">매체 수</div><div class="s-value color-green" id="statSources">—</div><div class="s-sub">data sources</div></div>
+          <div class="stat-card"><div class="s-label">평균 CTR</div><div class="s-value color-pink" id="statCTR">—</div><div class="s-sub">click-through rate</div></div>
+          <div class="stat-card"><div class="s-label">평균 CPC</div><div class="s-value color-gold" id="statCPC">—</div><div class="s-sub">cost per click</div></div>
+        </div>
+
+        <!-- Preview Table -->
+        <div class="card">
+          <div class="card-title">👀 데이터 미리보기 (상위 10행)</div>
+          <div class="table-wrapper" id="previewTable"></div>
+        </div>
+
+        <button class="btn btn-accent btn-full" onclick="downloadReport()" style="margin-top:0">
+          <span>⬇️</span> 완성된 리포트 다운로드
+        </button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         PAGE 2: MONITOR
+    ════════════════════════════════════ -->
+    <div class="page" id="page-monitor">
+      <div class="page-header">
+        <div class="page-header-text">
+          <div class="eyebrow">✦ 02 — Trend Monitoring</div>
+          <h2>INTEL<br>RADAR</h2>
+          <p>AI가 핵심 키워드를 실시간 분석하고 브리핑을 지정 채널로 자동 발송합니다.</p>
+        </div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          AI READY
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      <div class="card anim-1">
+        <div class="card-title">01 &nbsp; 키워드 설정</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label class="form-label">담당 브랜드 키워드</label>
+            <input class="form-input" type="text" id="brandKw" placeholder="예: 라네즈, LANEIGE" value="A뷰티">
+          </div>
+          <div class="form-group">
+            <label class="form-label">경쟁사 키워드 (쉼표 구분)</label>
+            <input class="form-input" type="text" id="compKw" placeholder="예: B코스메틱, C케어" value="B코스메틱, C케어">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">추가 분석 요청사항</label>
+          <textarea class="form-textarea" id="extraPrompt" placeholder="예: SNS 반응, 프로모션 전략, 소비자 심리 등 원하는 분석 포인트를 자유롭게 입력하세요."></textarea>
+        </div>
+      </div>
+
+      <!-- AI Model -->
+      <div class="card anim-2">
+        <div class="card-title">02 &nbsp; AI 엔진 선택</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+          API 키 없이도 <strong style="color:var(--accent)">Claude (내장)</strong>를 바로 사용할 수 있어요.<br>
+          다른 AI를 쓰려면 해당 API 키를 입력하세요.
+        </p>
+        <div class="ai-selector" id="aiSelector">
+          <div class="ai-option selected" onclick="selectAI('claude', this)">
+            <div class="ai-badge">내장 · 무료</div>
+            <div class="ai-icon">🔮</div>
+            <div class="ai-name">Claude Sonnet</div>
+            <div class="ai-sub">Anthropic · 내장 연동</div>
+          </div>
+          <div class="ai-option" onclick="selectAI('openai', this)">
+            <div class="ai-icon">🧠</div>
+            <div class="ai-name">GPT-4o</div>
+            <div class="ai-sub">OpenAI · API 키 필요</div>
+          </div>
+          <div class="ai-option" onclick="selectAI('gemini', this)">
+            <div class="ai-icon">♊</div>
+            <div class="ai-name">Gemini 1.5 Pro</div>
+            <div class="ai-sub">Google · API 키 필요</div>
+          </div>
+        </div>
+
+        <!-- API key input (hidden for claude) -->
+        <div id="apiKeySection" style="display:none;margin-top:16px;">
+          <div class="form-group">
+            <label class="form-label" id="apiKeyLabel">API Key</label>
+            <input class="form-input" type="password" id="apiKeyInput" placeholder="sk-...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Channels -->
+      <div class="card anim-3">
+        <div class="card-title">03 &nbsp; 알림 채널 설정</div>
+        <div class="channel-grid">
+          <!-- Kakao -->
+          <div class="channel-card" id="kakaoCard" onclick="toggleChannel('kakao')">
+            <div class="ch-check" id="kakaoCheck">✓</div>
+            <div class="ch-header">
+              <div class="ch-icon">💬</div>
+              <div>
+                <div class="ch-name">카카오톡</div>
+                <div class="ch-desc">카카오 계정으로 간편 로그인</div>
+              </div>
+            </div>
+          </div>
+          <!-- Slack -->
+          <div class="channel-card" id="slackCard" onclick="toggleChannel('slack')">
+            <div class="ch-check" id="slackCheck">✓</div>
+            <div class="ch-header">
+              <div class="ch-icon">🏢</div>
+              <div>
+                <div class="ch-name">Slack</div>
+                <div class="ch-desc">Webhook URL로 연동</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kakao login section -->
+        <div class="kakao-login-section" id="kakaoSection">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;">
+            카카오 계정으로 로그인하면 나에게 카카오톡 알림을 보낼 수 있어요.<br>
+            <strong style="color:var(--gold)">※ 카페24 운영 시 카카오 앱키를 설정 파일에 등록해주세요.</strong>
+          </p>
+          <button class="kakao-login-btn" onclick="kakaoLogin()">
+            <span style="font-size:20px;">🟡</span>
+            카카오 계정으로 로그인
+          </button>
+          <div class="kakao-status" id="kakaoStatus">
+            ✅ 카카오 연동 완료 — <span id="kakaoNickname">사용자</span>님
+          </div>
+        </div>
+
+        <!-- Slack section -->
+        <div class="slack-section" id="slackSection">
+          <div class="form-group" style="margin-top:0">
+            <label class="form-label">Slack Webhook URL</label>
+            <input class="form-input" type="password" id="slackWebhook" placeholder="https://hooks.slack.com/services/...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="card anim-4">
+        <div class="card-title">04 &nbsp; 자동 발송 스케줄</div>
+        <div class="input-row">
+          <div class="form-group">
+            <label class="form-label">매일 발송 시간</label>
+            <input class="form-input" type="time" id="scheduleTime" value="08:30">
+          </div>
+          <div class="form-group">
+            <label class="form-label">발송 언어</label>
+            <select class="form-select" id="reportLang">
+              <option value="ko">🇰🇷 한국어</option>
+              <option value="en">🇺🇸 English</option>
+            </select>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.7;">
+          ⚠️ 자동 스케줄은 서버(Node.js cron 등)와 연동 시 실제 동작합니다. 현재는 즉시 테스트 전송 기능을 사용해주세요.
+        </p>
+      </div>
+
+      <!-- Run -->
+      <div class="card anim-5">
+        <div class="card-title">05 &nbsp; 실행</div>
+        <button class="btn btn-accent btn-full" onclick="runMonitor()" id="monitorBtn">
+          <span>🔔</span> 즉시 AI 분석 & 채널 발송 테스트
+        </button>
+        <div class="progress-bar" id="monitorProgress"><div class="progress-fill" id="monitorProgressFill"></div></div>
+
+        <!-- AI Result -->
+        <div class="ai-result-box" id="aiResultBox">
+          <div class="ai-result-header">
+            <span>🤖</span>
+            AI BRIEFING OUTPUT
+            <span id="aiModelLabel" style="margin-left:auto;color:var(--muted)"></span>
+          </div>
+          <div class="ai-result-content" id="aiResultContent"></div>
+        </div>
+      </div>
+
+    </div><!-- /page-monitor -->
+
+  </main><!-- /main -->
+</div><!-- /wrapper -->
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================ -->
+<script>
+// ───── GLOBAL STATE ─────
+const state = {
+  files: [],
+  mergedData: null,
+  mergedHeaders: [],
+  selectedAI: 'claude',
+  kakaoConnected: false,
+  kakaoToken: null,
+  channels: { kakao: false, slack: false }
+};
+
+// ───── PAGE SWITCH ─────
+function switchPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ───── TOAST ─────
+function toast(msg, type = 'info', duration = 4000) {
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const div = document.createElement('div');
+  div.className = `toast ${type}`;
+  div.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(div);
+  setTimeout(() => { div.style.opacity = '0'; div.style.transform = 'translateX(120%)'; div.style.transition = '0.3s'; setTimeout(() => div.remove(), 300); }, duration);
+}
+
+// ───── FILE HANDLING ─────
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(f => {
+    if (!state.files.find(x => x.name === f.name)) state.files.push(f);
+  });
+  renderChips();
+}
+function renderChips() {
+  const c = document.getElementById('fileChips');
+  c.innerHTML = state.files.map((f, i) =>
+    `<div class="file-chip">📄 ${f.name} <button onclick="removeFile(${i})">✕</button></div>`
+  ).join('');
+}
+function removeFile(i) { state.files.splice(i, 1); renderChips(); }
+
+function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function handleDragLeave()  { document.getElementById('dropZone').classList.remove('drag-over'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+}
+
+// ───── REPORT GENERATION ─────
+async function generateReport() {
+  if (!state.files.length) { toast('파일을 먼저 업로드해주세요!', 'error'); return; }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>&nbsp;처리 중...';
+
+  const progress = document.getElementById('reportProgress');
+  const fill = document.getElementById('reportProgressFill');
+  progress.classList.add('visible');
+
+  try {
+    const allData = [];
+    const headers = new Set();
+
+    for (let i = 0; i < state.files.length; i++) {
+      fill.style.width = ((i / state.files.length) * 70) + '%';
+      const data = await readFile(state.files[i]);
+      data.forEach(row => {
+        const renamed = renameColumns(row);
+        renamed['매체'] = state.files[i].name.replace(/\.[^.]+$/, '');
+        allData.push(renamed);
+        Object.keys(renamed).forEach(k => headers.add(k));
+      });
+    }
+
+    // Calculate metrics
+    allData.forEach(row => {
+      const clicks = parseNum(row['클릭수']);
+      const imps   = parseNum(row['노출수']);
+      const cost   = parseNum(row['광고비']);
+      if (clicks > 0 && imps > 0) row['CTR(%)'] = ((clicks / imps) * 100).toFixed(2);
+      if (cost > 0 && clicks > 0) row['CPC'] = Math.round(cost / clicks);
+    });
+
+    state.mergedData = allData;
+    state.mergedHeaders = Array.from(headers);
+    fill.style.width = '100%';
+
+    setTimeout(() => {
+      progress.classList.remove('visible');
+      fill.style.width = '0%';
+      showStats(allData);
+      toast('리포트 생성 완료! 🎉', 'success');
+      btn.disabled = false;
+      btn.innerHTML = '<span>🚀</span> 통합 리포트 생성 시작';
+    }, 500);
+
+  } catch (e) {
+    toast('오류: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<span>🚀</span> 통합 리포트 생성 시작';
+    progress.classList.remove('visible');
+  }
+}
+
+function renameColumns(row) {
+  const map = { '지출 금액': '광고비', '비용': '광고비', 'Cost': '광고비', 'Clicks': '클릭수', 'Impressions': '노출수' };
+  const out = {};
+  Object.entries(row).forEach(([k, v]) => { out[map[k] || k] = v; });
+  return out;
+}
+function parseNum(v) { return isNaN(Number(v)) ? 0 : Number(v); }
+
+function readFile(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        res(XLSX.utils.sheet_to_json(ws, { defval: '' }));
+      } catch(err) { rej(err); }
+    };
+    r.onerror = rej;
+    r.readAsBinaryString(file);
+  });
+}
+
+function showStats(data) {
+  const section = document.getElementById('statsSection');
+  section.style.display = 'block';
+
+  const sources = new Set(data.map(r => r['매체'])).size;
+  const ctrs = data.map(r => parseFloat(r['CTR(%)'])).filter(n => !isNaN(n));
+  const cpcs = data.map(r => parseFloat(r['CPC'])).filter(n => !isNaN(n));
+  const avgCTR = ctrs.length ? (ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2)+'%' : '—';
+  const avgCPC = cpcs.length ? '₩'+Math.round(cpcs.reduce((a,b)=>a+b,0)/cpcs.length).toLocaleString() : '—';
+
+  document.getElementById('statRows').textContent = data.length.toLocaleString();
+  document.getElementById('statSources').textContent = sources;
+  document.getElementById('statCTR').textContent = avgCTR;
+  document.getElementById('statCPC').textContent = avgCPC;
+
+  // Preview table
+  const cols = Object.keys(data[0] || {});
+  const preview = data.slice(0, 10);
+  const html = `<table>
+    <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${preview.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>`;
+  document.getElementById('previewTable').innerHTML = html;
+}
+
+function downloadReport() {
+  if (!state.mergedData) { toast('먼저 리포트를 생성해주세요.', 'error'); return; }
+  const ws = XLSX.utils.json_to_sheet(state.mergedData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, document.getElementById('sheetName').value || '통합데이터');
+
+  // Style header row
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let c = range.s.c; c <= range.e.c; c++) {
+    const addr = XLSX.utils.encode_cell({ r: 0, c });
+    if (!ws[addr]) continue;
+    ws[addr].s = { fill: { fgColor: { rgb: '1B365D' } }, font: { color: { rgb: 'FFFFFF' }, bold: true }, alignment: { horizontal: 'center' } };
+  }
+
+  const name = document.getElementById('outputFileName').value || `통합리포트_${new Date().toISOString().slice(0,10)}`;
+  XLSX.writeFile(wb, name + '.xlsx');
+  toast('리포트 다운로드 시작!', 'success');
+}
+
+// ───── AI SELECTOR ─────
+function selectAI(model, el) {
+  document.querySelectorAll('.ai-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedAI = model;
+  const sec = document.getElementById('apiKeySection');
+  const lbl = document.getElementById('apiKeyLabel');
+  if (model === 'claude') {
+    sec.style.display = 'none';
+  } else {
+    sec.style.display = 'block';
+    lbl.textContent = model === 'openai' ? 'OpenAI API Key' : 'Google Gemini API Key';
+    document.getElementById('apiKeyInput').placeholder = model === 'openai' ? 'sk-...' : 'AIza...';
+  }
+}
+
+// ───── CHANNELS ─────
+function toggleChannel(ch) {
+  state.channels[ch] = !state.channels[ch];
+  const card  = document.getElementById(ch + 'Card');
+  const check = document.getElementById(ch + 'Check');
+  if (state.channels[ch]) {
+    card.classList.add('selected');
+    check.textContent = '✓';
+  } else {
+    card.classList.remove('selected');
+    check.textContent = '';
+  }
+  document.getElementById('kakaoSection').classList.toggle('visible', state.channels.kakao);
+  document.getElementById('slackSection').classList.toggle('visible', state.channels.slack);
+}
+
+// ───── KAKAO LOGIN (OAuth) ─────
+// ⚙️ 카페24 배포 시 아래 YOUR_KAKAO_APP_KEY 를 카카오 디벨로퍼스에서 발급받은 JavaScript 앱키로 교체하세요.
+const KAKAO_APP_KEY = 'YOUR_KAKAO_APP_KEY';
+
+function kakaoLogin() {
+  if (KAKAO_APP_KEY === 'YOUR_KAKAO_APP_KEY') {
+    toast('카카오 앱키를 코드에 설정해주세요. (KAKAO_APP_KEY 변수)', 'error', 6000);
+    return;
+  }
+  if (!window.Kakao) {
+    const s = document.createElement('script');
+    s.src = 'https://developers.kakao.com/sdk/js/kakao.js';
+    s.onload = () => { window.Kakao.init(KAKAO_APP_KEY); _doKakaoLogin(); };
+    document.head.appendChild(s);
+  } else {
+    if (!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_APP_KEY);
+    _doKakaoLogin();
+  }
+}
+
+function _doKakaoLogin() {
+  window.Kakao.Auth.login({
+    scope: 'profile_nickname,talk_message',
+    success: function(auth) {
+      state.kakaoToken = auth.access_token;
+      window.Kakao.API.request({
+        url: '/v2/user/me',
+        success: function(res) {
+          const nick = res.kakao_account?.profile?.nickname || '사용자';
+          state.kakaoConnected = true;
+          document.getElementById('kakaoNickname').textContent = nick;
+          document.getElementById('kakaoStatus').classList.add('connected');
+          toast(`카카오 로그인 성공! 안녕하세요 ${nick}님 👋`, 'success');
+        }
+      });
+    },
+    fail: function(err) {
+      toast('카카오 로그인 실패: ' + (err.error_description || err.error), 'error');
+    }
+  });
+}
+
+// ───── MONITOR / AI CALL ─────
+async function runMonitor() {
+  const brand = document.getElementById('brandKw').value.trim();
+  const comp  = document.getElementById('compKw').value.trim();
+  const extra = document.getElementById('extraPrompt').value.trim();
+
+  if (!brand) { toast('담당 브랜드 키워드를 입력해주세요.', 'error'); return; }
+
+  const btn = document.getElementById('monitorBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>&nbsp;AI 분석 중...';
+
+  const prog = document.getElementById('monitorProgress');
+  const fill = document.getElementById('monitorProgressFill');
+  prog.classList.add('visible');
+  fill.style.width = '20%';
+
+  const resultBox = document.getElementById('aiResultBox');
+  const resultContent = document.getElementById('aiResultContent');
+  resultBox.classList.add('visible');
+  resultContent.innerHTML = '<span class="typing-cursor"></span>';
+  document.getElementById('aiModelLabel').textContent = state.selectedAI.toUpperCase();
+
+  const prompt = buildPrompt(brand, comp, extra);
+
+  try {
+    fill.style.width = '50%';
+
+    if (state.selectedAI === 'claude') {
+      await callClaudeAPI(prompt, resultContent, fill);
+    } else if (state.selectedAI === 'openai') {
+      await callOpenAI(prompt, resultContent, fill);
+    } else {
+      await callGemini(prompt, resultContent, fill);
+    }
+
+    fill.style.width = '100%';
+    setTimeout(() => { prog.classList.remove('visible'); fill.style.width = '0%'; }, 600);
+
+    // Send to channels
+    const text = resultContent.textContent;
+    if (state.channels.kakao && state.kakaoConnected) await sendKakao(text);
+    if (state.channels.slack) await sendSlack(text);
+
+    toast('AI 분석 & 발송 완료! 🎯', 'success');
+  } catch(e) {
+    toast('오류: ' + e.message, 'error');
+    resultContent.textContent = '분석 중 오류가 발생했습니다: ' + e.message;
+    prog.classList.remove('visible');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>🔔</span> 즉시 AI 분석 & 채널 발송 테스트';
+}
+
+function buildPrompt(brand, comp, extra) {
+  const today = new Date().toLocaleDateString('ko-KR');
+  return `당신은 최고의 마케터입니다. 오늘(${today}) 기준 아래 내용을 분석해주세요.
+
+📌 담당 브랜드: ${brand}
+⚡ 경쟁사: ${comp}
+${extra ? '📝 추가 분석 요청: ' + extra : ''}
+
+아래 형식으로 한국어 마케팅 브리핑을 작성해주세요:
+
+📢 오늘의 마케팅 브리핑 — ${today}
+
+🔥 [${brand}] 브랜드 동향 분석
+• (최근 SNS 반응 및 트렌드 추이)
+• (소비자 심리 및 반응)
+
+⚡ [경쟁사 동향: ${comp}]
+• (경쟁사 최신 마케팅 활동)
+• (주목할 만한 변화)
+
+💡 오늘의 마케팅 인사이트 & 액션 아이템
+• (즉시 실행 가능한 제안)
+
+이모지를 풍부하게 써서 읽기 편하고 활기차게 작성해주세요.`;
+}
+
+// ── Claude (built-in via Anthropic API) ──
+async function callClaudeAPI(prompt, el, fill) {
+  fill.style.width = '70%';
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!res.ok) throw new Error('Claude API 오류: ' + res.status);
+  const data = await res.json();
+  const text = data.content.map(b => b.text || '').join('');
+  await typewriterEffect(el, text);
+}
+
+// ── OpenAI ──
+async function callOpenAI(prompt, el, fill) {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) throw new Error('OpenAI API 키를 입력해주세요.');
+  fill.style.width = '70%';
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body: JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'user', content: prompt }], max_tokens: 1000 })
+  });
+  if (!res.ok) throw new Error('OpenAI API 오류: ' + res.status);
+  const data = await res.json();
+  await typewriterEffect(el, data.choices[0].message.content);
+}
+
+// ── Gemini ──
+async function callGemini(prompt, el, fill) {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) throw new Error('Gemini API 키를 입력해주세요.');
+  fill.style.width = '70%';
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  if (!res.ok) throw new Error('Gemini API 오류: ' + res.status);
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답 없음';
+  await typewriterEffect(el, text);
+}
+
+// Typewriter effect
+function typewriterEffect(el, text) {
+  return new Promise(res => {
+    el.textContent = '';
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    el.appendChild(cursor);
+    const iv = setInterval(() => {
+      if (i >= text.length) { clearInterval(iv); cursor.remove(); res(); return; }
+      el.insertBefore(document.createTextNode(text[i++]), cursor);
+    }, 12);
+  });
+}
+
+// ───── KAKAO SEND ─────
+async function sendKakao(text) {
+  if (!state.kakaoToken) { toast('카카오 로그인이 필요합니다.', 'error'); return; }
+  try {
+    await window.Kakao.API.request({
+      url: '/v2/api/talk/memo/default/send',
+      data: {
+        template_object: {
+          object_type: 'text',
+          text: text.slice(0, 500),
+          link: { mobile_web_url: 'https://kakao.com', web_url: 'https://kakao.com' }
+        }
+      }
+    });
+    toast('카카오톡 발송 완료! 💬', 'success');
+  } catch(e) {
+    toast('카카오톡 발송 실패: ' + (e.message || ''), 'error');
+  }
+}
+
+// ───── SLACK SEND ─────
+async function sendSlack(text) {
+  const url = document.getElementById('slackWebhook').value.trim();
+  if (!url) { toast('Slack Webhook URL을 입력해주세요.', 'error'); return; }
+  try {
+    // NOTE: 실제 카페24 배포 환경에서는 CORS 문제로 서버사이드 프록시를 거쳐야 합니다.
+    // 아래는 프록시 없이 직접 호출하는 예시입니다.
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: '📢 *마케팅 AI 브리핑*\n\n' + text })
+    });
+    toast('Slack 발송 완료! 🏢', 'success');
+  } catch(e) {
+    toast('Slack 발송 실패 (CORS 가능성 있음)', 'error');
+  }
+}
+
+// ───── INIT ─────
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  document.getElementById('outputFileName').value = `통합리포트_${today}`;
+
+  // Memo persistence (sessionStorage)
+  const saved = sessionStorage.getItem('gogup_memo');
+  if (saved) document.getElementById('sidebarMemo').value = saved;
+  document.getElementById('sidebarMemo').addEventListener('input', function() {
+    sessionStorage.setItem('gogup_memo', this.value);
+  });
+});
+</script>
+
+<!--
+=================================================================
+  카페24 배포 가이드
+=================================================================
+  1. 이 HTML 파일 전체를 카페24 스마트 디자인 편집기에 붙여넣기
+     또는 독립 HTML 파일로 FTP 업로드 후 링크 연결
+  
+  2. 카카오톡 연동 설정:
+     - https://developers.kakao.com 에서 앱 생성
+     - JavaScript 앱키를 KAKAO_APP_KEY 변수에 입력
+     - 카카오 플랫폼에서 도메인 등록 (예: your-shop.cafe24.com)
+     - 카카오 로그인 활성화 후 Redirect URI 설정
+  
+  3. Slack 연동:
+     - Slack 워크스페이스 → Apps → Incoming Webhooks 활성화
+     - Webhook URL 복사 후 툴에서 입력
+     - CORS 문제 발생 시 카페24 서버 스크립트로 프록시 구성 필요
+  
+  4. Claude AI는 별도 설정 없이 내장 사용 가능
+     OpenAI / Gemini 사용 시 해당 API 키만 입력하면 됩니다.
+=================================================================
+-->
+
+</body>
+</html>

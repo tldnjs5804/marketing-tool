@@ -229,6 +229,52 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 
+/* ══════════════════════════════
+   BUDGET PAGE
+══════════════════════════════ */
+/* channel rows */
+.ch-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.ch-row{display:grid;grid-template-columns:180px 1fr 1fr 1fr 36px;gap:10px;align-items:center;padding:14px 16px;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:11px;transition:border-color .2s}
+.ch-row:hover{border-color:rgba(78,143,255,.3)}
+.ch-row .ch-name{font-size:13px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px}
+.ch-row .ch-name .ch-ic{font-size:18px}
+.ch-row .ch-del{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);border-radius:7px;color:var(--danger);cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0}
+.ch-row .ch-del:hover{background:rgba(255,77,109,.2)}
+/* goal cards */
+.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.goal-card{padding:14px;border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02);text-align:center}
+.goal-card:hover{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.05)}
+.goal-card.on{border-color:var(--gold);background:rgba(255,209,102,.1)}
+.goal-card .gc-ic{font-size:22px;margin-bottom:6px}
+.goal-card .gc-nm{font-size:11px;font-weight:700;color:var(--white)}
+/* result bars */
+.budget-result{display:none;margin-top:16px}
+.budget-result.on{display:block}
+.br-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.br-title{font-size:10px;font-family:var(--fm);letter-spacing:2px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.bar-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.bar-item{}
+.bar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.bar-label{font-size:12px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:7px}
+.bar-vals{display:flex;align-items:center;gap:12px}
+.bar-amt{font-family:var(--fm);font-size:12px;color:var(--gold)}
+.bar-pct{font-family:var(--fm);font-size:11px;color:var(--muted)}
+.bar-track{height:10px;background:var(--border);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+/* roi cards */
+.roi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.roi-card{padding:16px;background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.15);border-radius:12px}
+.roi-card .rl{font-size:8px;letter-spacing:3px;color:var(--muted);font-family:var(--fm);text-transform:uppercase;margin-bottom:5px}
+.roi-card .rv{font-family:var(--fd);font-size:26px;color:var(--gold)}
+.roi-card .rs{font-size:10px;color:var(--muted);margin-top:2px}
+/* ai commentary */
+.ai-commentary{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:11px;padding:16px;margin-top:4px}
+.ac-h{font-size:9px;font-family:var(--fm);letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.ac-body{font-size:12px;line-height:1.85;color:var(--white);white-space:pre-wrap}
+/* nb gold variant */
+.nb.gold-on{background:rgba(255,209,102,.07);color:var(--gold);border-color:rgba(255,209,102,.17)}
+.nb.gold-on::before{background:var(--gold);transform:scaleY(1)}
+
 @media(max-width:860px){
   .sb{width:200px}.main{padding:20px 14px}
   .r2,.r3{grid-template-columns:1fr}
@@ -236,6 +282,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   .stats{grid-template-columns:1fr 1fr}
   .anl-grid{grid-template-columns:1fr 1fr}
   .tlinks{grid-template-columns:1fr 1fr}
+  .ch-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto}
+  .goal-grid{grid-template-columns:1fr 1fr}
+  .roi-grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -255,6 +304,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <button class="nb on" onclick="go('report',this)"><span class="ic">📊</span>리포트 자동화</button>
     <button class="nb" onclick="go('monitor',this)"><span class="ic">🤖</span>트렌드 모니터링</button>
     <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성<span class="bdg">NEW</span></button>
+    <button class="nb" onclick="go('budget',this)"><span class="ic">💰</span>예산 최적화<span class="bdg" style="background:rgba(255,209,102,.15);border-color:rgba(255,209,102,.3);color:var(--gold)">PRO</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -564,6 +614,182 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       </div>
     </div>
     <div id="writeHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 4 : BUDGET ▓▓▓▓▓ -->
+<div class="page" id="page-budget">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--gold)">✦ 04 — Budget Optimizer</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">BUDGET<br>PLANNER</h2>
+      <p>총 광고예산과 목표를 입력하면 AI가 채널별 최적 배분 전략과 ROI 예측을 즉시 제공합니다.</p>
+    </div>
+    <div class="sbdg" style="background:rgba(255,209,102,.07);border-color:rgba(255,209,102,.2);color:var(--gold)"><div class="sdot" style="background:var(--gold)"></div>PRO TOOL</div>
+  </div>
+
+  <!-- STEP 1: 기본 예산 정보 -->
+  <div class="card a1">
+    <div class="ct" style="color:var(--gold)">01 &nbsp; 기본 예산 정보</div>
+    <div class="r2">
+      <div class="fg">
+        <label class="fl">총 광고 예산 (원)</label>
+        <input class="fi" type="number" id="bTotalBudget" placeholder="예: 50000000" oninput="fmtBudget()">
+        <div id="bBudgetFmt" style="font-size:11px;color:var(--gold);font-family:var(--fm);margin-top:5px;min-height:16px"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">캠페인 기간</label>
+        <select class="fs" id="bPeriod">
+          <option value="1">1개월</option>
+          <option value="2">2개월</option>
+          <option value="3" selected>3개월</option>
+          <option value="6">6개월</option>
+          <option value="12">1년</option>
+        </select>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <label class="fl">업종 / 카테고리</label>
+        <select class="fs" id="bIndustry">
+          <option value="beauty">💄 뷰티·화장품</option>
+          <option value="fashion">👗 패션·의류</option>
+          <option value="food">🍔 식품·F&amp;B</option>
+          <option value="ecommerce">🛒 이커머스</option>
+          <option value="app">📱 앱·게임</option>
+          <option value="finance">💳 금융·핀테크</option>
+          <option value="health">🏥 헬스·의료</option>
+          <option value="edu">📚 교육</option>
+          <option value="b2b">🏢 B2B·SaaS</option>
+          <option value="other">🔧 기타</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">타겟 연령대</label>
+        <select class="fs" id="bTarget">
+          <option value="10s">10대</option>
+          <option value="20s" selected>20대</option>
+          <option value="30s">30대</option>
+          <option value="40s">40대</option>
+          <option value="all">전 연령</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 캠페인 목표 -->
+  <div class="card a2">
+    <div class="ct" style="color:var(--gold)">02 &nbsp; 캠페인 목표 선택</div>
+    <div class="goal-grid">
+      <div class="goal-card on" data-goal="awareness" onclick="togGoal(this)">
+        <div class="gc-ic">📢</div><div class="gc-nm">브랜드 인지도</div>
+      </div>
+      <div class="goal-card" data-goal="conversion" onclick="togGoal(this)">
+        <div class="gc-ic">🛒</div><div class="gc-nm">구매 전환</div>
+      </div>
+      <div class="goal-card" data-goal="traffic" onclick="togGoal(this)">
+        <div class="gc-ic">🔗</div><div class="gc-nm">웹사이트 트래픽</div>
+      </div>
+      <div class="goal-card" data-goal="lead" onclick="togGoal(this)">
+        <div class="gc-ic">📋</div><div class="gc-nm">리드 수집</div>
+      </div>
+      <div class="goal-card" data-goal="retention" onclick="togGoal(this)">
+        <div class="gc-ic">🔄</div><div class="gc-nm">재구매·리텐션</div>
+      </div>
+      <div class="goal-card" data-goal="viral" onclick="togGoal(this)">
+        <div class="gc-ic">🔥</div><div class="gc-nm">바이럴·입소문</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 채널 설정 -->
+  <div class="card a3">
+    <div class="ct" style="color:var(--gold)">03 &nbsp; 광고 채널 & 과거 성과 입력</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">과거 데이터가 없으면 비워도 됩니다. AI가 업종·목표 기반으로 자동 추정합니다.</p>
+
+    <div style="display:grid;grid-template-columns:180px 1fr 1fr 1fr 36px;gap:10px;padding:0 16px;margin-bottom:6px">
+      <div style="font-size:9px;font-family:var(--fm);color:var(--muted);letter-spacing:1px">채널</div>
+      <div style="font-size:9px;font-family:var(--fm);color:var(--muted);letter-spacing:1px">과거 CPC (원)</div>
+      <div style="font-size:9px;font-family:var(--fm);color:var(--muted);letter-spacing:1px">전환율 (%)</div>
+      <div style="font-size:9px;font-family:var(--fm);color:var(--muted);letter-spacing:1px">과거 ROAS</div>
+      <div></div>
+    </div>
+
+    <div class="ch-rows" id="chRows"></div>
+
+    <button class="btn bsm" style="background:rgba(255,209,102,.08);color:var(--gold);border:1px solid rgba(255,209,102,.22);margin-top:4px" onclick="addChannel()">+ 채널 추가</button>
+  </div>
+
+  <!-- STEP 4: 추가 조건 -->
+  <div class="card a4">
+    <div class="ct" style="color:var(--gold)">04 &nbsp; 추가 조건 (선택)</div>
+    <div class="r2">
+      <div class="fg">
+        <label class="fl">특정 채널 최소 배분 비율 (%)</label>
+        <input class="fi" type="text" id="bMinAlloc" placeholder="예: 인스타그램 최소 30%">
+      </div>
+      <div class="fg">
+        <label class="fl">목표 ROAS</label>
+        <input class="fi" type="number" id="bTargetROAS" placeholder="예: 300 (300%)" min="0">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">특이사항 / 제약 조건</label>
+      <textarea class="fta" id="bConstraints" placeholder="예: 유튜브는 브랜드 이미지상 제외&#10;네이버 SA는 기존 대행사 계약으로 최소 20% 유지 필요"></textarea>
+    </div>
+  </div>
+
+  <!-- STEP 5: AI 엔진 + 실행 -->
+  <div class="card a5">
+    <div class="ct" style="color:var(--gold)">05 &nbsp; AI 엔진 & 최적화 실행</div>
+    <div class="ai-g" id="baiSel">
+      <div class="aio sel" onclick="selAI('claude','baiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','baiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','baiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+    </div>
+    <div id="bApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="bApiLbl">API Key</label><input class="fi" type="password" id="bApiKey" placeholder="sk-..."></div>
+    </div>
+    <hr class="dv">
+    <button class="btn bfl" style="background:linear-gradient(135deg,var(--gold),#FF9500);color:#07090F;font-weight:900;box-shadow:0 4px 20px rgba(255,209,102,.25)" onclick="runBudget()" id="budgetBtn">
+      <span>💰</span> AI 예산 최적화 분석 시작
+    </button>
+    <div class="pg" id="bp"><div class="pgf" id="bpf" style="background:linear-gradient(90deg,var(--gold),#FF9500)"></div></div>
+
+    <!-- Result -->
+    <div class="budget-result" id="budgetResult">
+      <div class="br-header">
+        <div class="br-title"><span>💰</span> 최적 예산 배분 결과 <span id="bModelLbl" style="color:var(--muted);margin-left:4px"></span></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="copyBudget()">📋 복사</button>
+          <button class="btn bsm bg" onclick="dlBudgetExcel()">⬇️ 엑셀 저장</button>
+        </div>
+      </div>
+
+      <!-- ROI 요약 -->
+      <div class="roi-grid" id="roiGrid"></div>
+
+      <!-- 배분 바 차트 -->
+      <div class="bar-list" id="barList"></div>
+
+      <!-- AI 코멘터리 -->
+      <div class="ai-commentary">
+        <div class="ac-h"><span>🤖</span> AI 전략 해설 & 액션 플랜</div>
+        <div class="ac-body" id="bAIComment"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 히스토리 -->
+  <div class="card a6">
+    <div class="ct" style="color:var(--gold);justify-content:space-between">
+      <span>📁 예산 플랜 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('budget')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('budget')">삭제</button>
+      </div>
+    </div>
+    <div id="budgetHist"></div>
   </div>
 </div>
 
@@ -1079,6 +1305,345 @@ function clearHist(key){
   renderHist(key);
   toast('삭제 완료','i');
 }
+// ─────────────────────────────────────────
+//  BUDGET OPTIMIZER
+// ─────────────────────────────────────────
+
+// Default channels
+const DEFAULT_CHANNELS = [
+  {id:'insta',  ic:'📸', name:'인스타그램'},
+  {id:'youtube',ic:'▶️', name:'유튜브'},
+  {id:'naver',  ic:'🟢', name:'네이버 SA'},
+  {id:'kakao',  ic:'🟡', name:'카카오 광고'},
+  {id:'meta',   ic:'🔵', name:'페이스북/Meta'},
+  {id:'tiktok', ic:'🎵', name:'틱톡'},
+  {id:'google', ic:'🔍', name:'구글 GDN'},
+];
+
+// bar colors per channel
+const BAR_COLORS = {
+  insta:'#E1306C', youtube:'#FF0000', naver:'#03C75A',
+  kakao:'#FEE500', meta:'#1877F2', tiktok:'#69C9D0', google:'#4285F4',
+  default:'#A78BFA'
+};
+
+let bChannels = []; // active channels
+let lastBudgetResult = null;
+let selectedGoal = 'awareness';
+
+// Init on page load
+document.addEventListener('DOMContentLoaded', ()=>{
+  DEFAULT_CHANNELS.slice(0,4).forEach(ch => addChannelById(ch));
+  renderHist('budget');
+});
+
+function togGoal(el){
+  document.querySelectorAll('.goal-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  selectedGoal = el.dataset.goal;
+}
+
+function fmtBudget(){
+  const v = parseInt(document.getElementById('bTotalBudget').value)||0;
+  const el = document.getElementById('bBudgetFmt');
+  if(!v){el.textContent='';return}
+  const eok = Math.floor(v/100000000);
+  const man = Math.floor((v%100000000)/10000);
+  let txt = '';
+  if(eok>0) txt += eok+'억 ';
+  if(man>0) txt += man+'만 ';
+  el.textContent = (txt+'원').trim() + ' (' + v.toLocaleString() + '원)';
+}
+
+function addChannel(){
+  // pick unused default or blank
+  const used = bChannels.map(c=>c.id);
+  const next = DEFAULT_CHANNELS.find(c=>!used.includes(c.id));
+  if(next) addChannelById(next);
+  else addChannelById({id:'custom_'+Date.now(), ic:'📡', name:'커스텀 채널'});
+}
+
+function addChannelById(ch){
+  bChannels.push({...ch, cpc:'', cvr:'', roas:''});
+  renderChannels();
+}
+
+function removeChannel(idx){
+  bChannels.splice(idx,1);
+  renderChannels();
+}
+
+function renderChannels(){
+  const el = document.getElementById('chRows');
+  if(!bChannels.length){
+    el.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)">채널을 추가하세요</div>';
+    return;
+  }
+  el.innerHTML = bChannels.map((ch,i)=>`
+    <div class="ch-row">
+      <div class="ch-name"><span class="ch-ic">${ch.ic}</span>${ch.name}</div>
+      <input class="fi" type="number" placeholder="예: 850" value="${ch.cpc}"
+        oninput="bChannels[${i}].cpc=this.value" style="padding:8px 10px;font-size:12px">
+      <input class="fi" type="number" placeholder="예: 2.1" value="${ch.cvr}"
+        oninput="bChannels[${i}].cvr=this.value" style="padding:8px 10px;font-size:12px">
+      <input class="fi" type="number" placeholder="예: 250" value="${ch.roas}"
+        oninput="bChannels[${i}].roas=this.value" style="padding:8px 10px;font-size:12px">
+      <button class="ch-del" onclick="removeChannel(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ── BUILD BUDGET PROMPT ──
+function buildBudgetPrompt(){
+  const total  = parseInt(document.getElementById('bTotalBudget').value)||0;
+  const period = document.getElementById('bPeriod').value;
+  const industry = document.getElementById('bIndustry').options[document.getElementById('bIndustry').selectedIndex].text;
+  const target = document.getElementById('bTarget').options[document.getElementById('bTarget').selectedIndex].text;
+  const goalEl = document.querySelector('.goal-card.on');
+  const goal   = goalEl ? goalEl.querySelector('.gc-nm').textContent : '브랜드 인지도';
+  const minAlloc = document.getElementById('bMinAlloc').value.trim();
+  const targetROAS = document.getElementById('bTargetROAS').value.trim();
+  const constraints = document.getElementById('bConstraints').value.trim();
+
+  const chInfo = bChannels.map(c=>{
+    let info = `- ${c.ic} ${c.name}`;
+    if(c.cpc)  info += ` | 과거CPC: ${parseInt(c.cpc).toLocaleString()}원`;
+    if(c.cvr)  info += ` | 전환율: ${c.cvr}%`;
+    if(c.roas) info += ` | 과거ROAS: ${c.roas}%`;
+    return info;
+  }).join('\n');
+
+  return `당신은 15년 경력의 퍼포먼스 마케팅 전략가입니다.
+아래 조건을 분석해서 채널별 최적 광고 예산 배분 전략을 수립해주세요.
+
+═══════════════════════════════
+총 광고 예산: ${total.toLocaleString()}원
+캠페인 기간: ${period}개월
+업종: ${industry}
+타겟 연령: ${target}
+캠페인 목표: ${goal}
+${targetROAS ? '목표 ROAS: '+targetROAS+'%' : ''}
+${minAlloc ? '배분 조건: '+minAlloc : ''}
+${constraints ? '제약 조건:\n'+constraints : ''}
+
+활용 가능 채널 & 과거 데이터:
+${chInfo || '(데이터 없음 — 업종·목표 기반 추정)'}
+═══════════════════════════════
+
+아래 JSON 형식으로만 응답해주세요. 다른 텍스트는 절대 포함하지 마세요:
+
+{
+  "allocation": [
+    {"channel": "채널명", "icon": "이모지", "amount": 숫자(원), "pct": 숫자(%), "reason": "한 줄 배분 근거"},
+    ...
+  ],
+  "roi_prediction": {
+    "expected_roas": "숫자%",
+    "estimated_reach": "숫자(만명)",
+    "estimated_clicks": "숫자",
+    "estimated_conversions": "숫자"
+  },
+  "strategy_comment": "전략 해설 및 액션 플랜 (500자 이상, 이모지 풍부하게, 채널별 운영 팁·주의사항·우선순위 포함)"
+}`;
+}
+
+// ── RUN BUDGET OPTIMIZATION ──
+async function runBudget(){
+  const total = parseInt(document.getElementById('bTotalBudget').value)||0;
+  if(!total){ toast('총 예산을 입력해주세요!','e'); return; }
+  if(!bChannels.length){ toast('채널을 1개 이상 추가해주세요!','e'); return; }
+
+  const btn = document.getElementById('budgetBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;AI 분석 중...';
+  const pg=document.getElementById('bp'); const pf=document.getElementById('bpf');
+  pg.classList.add('on'); pf.style.width='20%';
+
+  const model   = S.ai['baiSel']||'claude';
+  const apiKey  = document.getElementById('bApiKey').value.trim();
+  const prompt  = buildBudgetPrompt();
+  pf.style.width='55%';
+
+  try{
+    const raw = await callAI(model, apiKey, prompt);
+    // parse JSON
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const data  = JSON.parse(clean);
+    pf.style.width='100%';
+
+    lastBudgetResult = {
+      date: nowStr(),
+      total,
+      industry: document.getElementById('bIndustry').options[document.getElementById('bIndustry').selectedIndex].text,
+      goal: document.querySelector('.goal-card.on')?.querySelector('.gc-nm')?.textContent||'',
+      period: document.getElementById('bPeriod').value+'개월',
+      model,
+      data
+    };
+
+    renderBudgetResult(data, total);
+    addHist('budget', lastBudgetResult);
+    toast('예산 최적화 완료! 💰','s');
+    document.getElementById('bModelLbl').textContent = 'via '+model.toUpperCase();
+
+  }catch(e){
+    toast('오류: '+e.message,'e');
+    console.error(e);
+  }
+
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false; btn.innerHTML='<span>💰</span> AI 예산 최적화 분석 시작';
+}
+
+function renderBudgetResult(data, total){
+  const box = document.getElementById('budgetResult');
+  box.classList.add('on');
+
+  // ROI cards
+  const roi = data.roi_prediction||{};
+  document.getElementById('roiGrid').innerHTML = `
+    <div class="roi-card"><div class="rl">예상 ROAS</div><div class="rv">${roi.expected_roas||'—'}</div><div class="rs">광고비 대비 수익률</div></div>
+    <div class="roi-card"><div class="rl">예상 도달</div><div class="rv">${roi.estimated_reach||'—'}</div><div class="rs">추정 노출 인원</div></div>
+    <div class="roi-card"><div class="rl">예상 클릭</div><div class="rv">${roi.estimated_clicks||'—'}</div><div class="rs">추정 총 클릭</div></div>
+    <div class="roi-card"><div class="rl">예상 전환</div><div class="rv">${roi.estimated_conversions||'—'}</div><div class="rs">추정 구매·리드</div></div>
+  `;
+
+  // Bar chart
+  const alloc = data.allocation||[];
+  const maxPct = Math.max(...alloc.map(a=>a.pct||0),1);
+  document.getElementById('barList').innerHTML = alloc.map((a,i)=>{
+    const color = BAR_COLORS[bChannels.find(c=>a.channel.includes(c.name.split(' ')[0]))?.id||''] || BAR_COLORS.default;
+    const barW  = ((a.pct||0)/maxPct*100).toFixed(1);
+    return `
+      <div class="bar-item" style="animation:fu .5s ease ${i*0.07}s both">
+        <div class="bar-top">
+          <div class="bar-label"><span>${a.icon||'📌'}</span>${a.channel}</div>
+          <div class="bar-vals">
+            <div class="bar-amt">${(a.amount||0).toLocaleString()}원</div>
+            <div class="bar-pct">${a.pct||0}%</div>
+          </div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%;background:${color}" data-w="${barW}"></div></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5">${a.reason||''}</div>
+      </div>`;
+  }).join('');
+
+  // Animate bars after render
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(el=>{
+      el.style.width = el.dataset.w+'%';
+    });
+  }, 100);
+
+  // AI commentary typewrite
+  const commentEl = document.getElementById('bAIComment');
+  commentEl.innerHTML = '<span class="cur"></span>';
+  typewrite(commentEl, data.strategy_comment||'').catch(()=>{});
+
+  // scroll to result
+  box.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyBudget(){
+  if(!lastBudgetResult) return;
+  const d = lastBudgetResult.data;
+  const lines = [`💰 예산 최적화 결과 — ${lastBudgetResult.date}`,
+    `총 예산: ${lastBudgetResult.total.toLocaleString()}원 | 목표: ${lastBudgetResult.goal} | 기간: ${lastBudgetResult.period}`, '',
+    '[ 채널별 배분 ]',
+    ...(d.allocation||[]).map(a=>`${a.icon} ${a.channel}: ${(a.amount||0).toLocaleString()}원 (${a.pct}%) — ${a.reason}`), '',
+    '[ ROI 예측 ]',
+    `예상 ROAS: ${d.roi_prediction?.expected_roas||'—'} | 도달: ${d.roi_prediction?.estimated_reach||'—'} | 클릭: ${d.roi_prediction?.estimated_clicks||'—'}`, '',
+    '[ AI 전략 해설 ]', d.strategy_comment||''
+  ].join('\n');
+  navigator.clipboard.writeText(lines).then(()=>toast('클립보드에 복사됨 ✓','s'));
+}
+
+function dlBudgetExcel(){
+  if(!lastBudgetResult){toast('먼저 분석을 실행해주세요','e');return}
+  const d = lastBudgetResult.data;
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: Allocation
+  const allocRows = (d.allocation||[]).map(a=>({
+    채널: a.icon+' '+a.channel,
+    배분금액: a.amount,
+    배분비율: a.pct+'%',
+    배분근거: a.reason
+  }));
+  const ws1 = XLSX.utils.json_to_sheet([
+    {'채널':'총 예산','배분금액':lastBudgetResult.total,'배분비율':'100%','배분근거':'—'},
+    ...allocRows
+  ]);
+  ws1['!cols']=[{wch:20},{wch:18},{wch:12},{wch:50}];
+  XLSX.utils.book_append_sheet(wb, ws1, '예산 배분');
+
+  // Sheet 2: ROI
+  const roi = d.roi_prediction||{};
+  const ws2 = XLSX.utils.json_to_sheet([
+    {지표:'예상 ROAS', 값:roi.expected_roas},
+    {지표:'예상 도달', 값:roi.estimated_reach},
+    {지표:'예상 클릭', 값:roi.estimated_clicks},
+    {지표:'예상 전환', 값:roi.estimated_conversions},
+  ]);
+  ws2['!cols']=[{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb, ws2, 'ROI 예측');
+
+  // Sheet 3: Strategy
+  const ws3 = XLSX.utils.json_to_sheet((d.strategy_comment||'').split('\n').map(l=>({전략내용:l})));
+  ws3['!cols']=[{wch:120}];
+  XLSX.utils.book_append_sheet(wb, ws3, 'AI 전략 해설');
+
+  XLSX.writeFile(wb, '예산최적화_'+nowStr(true)+'.xlsx');
+  toast('엑셀 저장 완료! 💰','s');
+}
+
+// extend getHistCols & getHistVal for budget
+const _origGetHistCols = getHistCols;
+function getHistCols(key){
+  if(key==='budget') return ['DATE','INDUSTRY','GOAL','PERIOD','TOTAL','MODEL'];
+  return _origGetHistCols(key);
+}
+const _origGetHistVal = getHistVal;
+function getHistVal(key,item,col){
+  if(key==='budget'){
+    const map={DATE:'date',INDUSTRY:'industry',GOAL:'goal',PERIOD:'period',MODEL:'model'};
+    if(col==='TOTAL') return (item.total||0).toLocaleString()+'원';
+    return item[map[col]]||'—';
+  }
+  return _origGetHistVal(key,item,col);
+}
+
+// extend dlHistItem for budget
+const _origDlHistItem = dlHistItem;
+function dlHistItem(key,idx){
+  if(key!=='budget'){_origDlHistItem(key,idx);return}
+  const item = getHist(key)[idx];
+  if(!item)return;
+  lastBudgetResult = item;
+  dlBudgetExcel();
+}
+
+// extend dlAllHist for budget
+const _origDlAllHist = dlAllHist;
+function dlAllHist(key){
+  if(key!=='budget'){_origDlAllHist(key);return}
+  const arr = getHist(key);
+  if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  const wb = XLSX.utils.book_new();
+  arr.forEach((item,i)=>{
+    const alloc = (item.data?.allocation||[]).map(a=>({채널:a.icon+' '+a.channel,배분금액:a.amount,배분비율:a.pct+'%',배분근거:a.reason}));
+    const ws = XLSX.utils.json_to_sheet([{채널:'날짜',배분금액:item.date,배분비율:'',배분근거:''},{채널:'총예산',배분금액:item.total,배분비율:'',배분근거:''},...alloc]);
+    ws['!cols']=[{wch:20},{wch:16},{wch:12},{wch:50}];
+    XLSX.utils.book_append_sheet(wb,ws,(i+1)+'_'+item.date.slice(0,10));
+  });
+  XLSX.writeFile(wb,'GOGUP_budget_history_'+nowStr(true)+'.xlsx');
+  toast('전체 히스토리 다운로드!','s');
+}
+
+// Register budget AI selector
+S.ai['baiSel'] = 'claude';
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Override selAI to handle baiSel
+  renderHist('budget');
+});
 </script>
 </body>
 </html>

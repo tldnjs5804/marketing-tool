@@ -7,6 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <style>
 :root{
   --bg:#07090F;--surface:#0C1020;--card:#101525;--border:#1A2540;
@@ -285,7 +290,78 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   .ch-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto}
   .goal-grid{grid-template-columns:1fr 1fr}
   .roi-grid{grid-template-columns:1fr 1fr}
+  .vz-type-grid{grid-template-columns:1fr 1fr!important}
+  .vz-chart-grid{grid-template-columns:1fr!important}
+  .vz-export-row{grid-template-columns:1fr 1fr!important}
 }
+
+/* ══════════════════════════════════
+   VIZ PAGE — DATA VISUALIZATION
+══════════════════════════════════ */
+--viz:#FF5FA0;
+
+/* file type checkbox grid */
+.vz-filetype-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:4px}
+.vz-ft{padding:14px 10px;border:1px solid var(--border);border-radius:12px;cursor:pointer;text-align:center;transition:all .22s;background:rgba(255,255,255,.02);position:relative;user-select:none}
+.vz-ft:hover{border-color:rgba(255,95,160,.4);background:rgba(255,95,160,.05)}
+.vz-ft.on{border-color:var(--accent3);background:rgba(255,95,160,.1);box-shadow:0 0 0 1px rgba(255,95,160,.2)}
+.vz-ft .vf-check{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .18s}
+.vz-ft.on .vf-check{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.vz-ft .vf-ic{font-size:28px;margin-bottom:7px}
+.vz-ft .vf-nm{font-size:11px;font-weight:700;color:var(--white);margin-bottom:2px}
+.vz-ft .vf-ds{font-size:9px;color:var(--muted);line-height:1.4}
+.vz-ft.disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+
+/* viz type selector */
+.vz-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.vz-type{padding:14px;border:1px solid var(--border);border-radius:12px;cursor:pointer;text-align:center;transition:all .22s;background:rgba(255,255,255,.02);position:relative}
+.vz-type:hover{border-color:rgba(255,95,160,.4);background:rgba(255,95,160,.05)}
+.vz-type.on{border-color:var(--accent3);background:rgba(255,95,160,.1)}
+.vz-type .vt-ic{font-size:26px;margin-bottom:6px}
+.vz-type .vt-nm{font-size:11px;font-weight:700;color:var(--white);margin-bottom:2px}
+.vz-type .vt-ds{font-size:9px;color:var(--muted)}
+
+/* upload multi zone */
+.vz-upload-wrap{display:flex;flex-direction:column;gap:10px}
+.vz-uz{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .25s;background:rgba(255,255,255,.01);position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.vz-uz:hover,.vz-uz.dov{border-color:var(--accent3);background:rgba(255,95,160,.05)}
+.vz-uz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.vz-uz .vu-ic{font-size:32px;margin-bottom:6px}
+.vz-uz h4{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
+.vz-uz p{font-size:10px;color:var(--muted)}
+.vz-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.vz-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,95,160,.08);border:1px solid rgba(255,95,160,.2);border-radius:99px;font-size:10px;font-family:var(--fm);color:var(--accent3)}
+.vz-chip button{background:none;border:none;color:var(--accent3);cursor:pointer;font-size:10px;padding:0}
+
+/* chart canvas area */
+.vz-canvas-area{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:24px;display:none;margin-top:16px}
+.vz-canvas-area.on{display:block}
+.vz-canvas-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.vz-canvas-title{font-size:10px;font-family:var(--fm);letter-spacing:2px;color:var(--accent3);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.vz-export-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
+.vz-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
+.vz-chart-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative}
+.vz-chart-box.full{grid-column:1/-1}
+.vz-chart-label{font-size:10px;font-family:var(--fm);letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.vz-chart-box canvas{max-height:280px}
+
+/* AI insight strip */
+.vz-insight{background:linear-gradient(135deg,rgba(255,95,160,.06),rgba(78,143,255,.06));border:1px solid rgba(255,95,160,.15);border-radius:12px;padding:18px;margin-top:12px}
+.vz-insight-h{font-size:9px;font-family:var(--fm);letter-spacing:2px;color:var(--accent3);text-transform:uppercase;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid rgba(255,95,160,.12);display:flex;align-items:center;gap:6px}
+.vz-insight-body{font-size:12px;line-height:1.85;color:var(--white);white-space:pre-wrap}
+
+/* parse preview table mini */
+.vz-data-preview{margin-top:14px;overflow-x:auto;border-radius:10px;border:1px solid var(--border);max-height:220px;overflow-y:auto}
+.vz-data-preview table{width:100%;border-collapse:collapse;font-size:10px}
+.vz-data-preview thead th{padding:8px 12px;background:var(--surface);font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0}
+.vz-data-preview tbody td{padding:7px 12px;border-bottom:1px solid rgba(26,37,64,.4);color:var(--white);white-space:nowrap}
+.vz-data-preview tbody tr:last-child td{border-bottom:none}
+.vz-data-preview tbody tr:hover td{background:rgba(255,95,160,.04)}
+
+/* color theme picker */
+.vz-theme-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.vz-theme{width:28px;height:28px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.vz-theme.on{border-color:var(--white);transform:scale(1.15)}
 </style>
 </head>
 <body>
@@ -305,6 +381,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <button class="nb" onclick="go('monitor',this)"><span class="ic">🤖</span>트렌드 모니터링</button>
     <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성<span class="bdg">NEW</span></button>
     <button class="nb" onclick="go('budget',this)"><span class="ic">💰</span>예산 최적화<span class="bdg" style="background:rgba(255,209,102,.15);border-color:rgba(255,209,102,.3);color:var(--gold)">PRO</span></button>
+    <button class="nb" onclick="go('viz',this)"><span class="ic">✨</span>데이터 시각화<span class="bdg" style="background:rgba(255,95,160,.15);border-color:rgba(255,95,160,.3);color:var(--accent3)">HOT</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -790,6 +867,209 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       </div>
     </div>
     <div id="budgetHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 5 : VIZ ▓▓▓▓▓ -->
+<div class="page" id="page-viz">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--accent3)">✦ 05 — Data Visualization</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">DATA<br>CANVAS</h2>
+      <p>엑셀·CSV·PDF·Word 파일을 올리면 AI가 데이터를 분석해 최적의 차트로 즉시 시각화합니다. PPT·PDF·이미지로 바로 내보내기까지.</p>
+    </div>
+    <div class="sbdg" style="background:rgba(255,95,160,.07);border-color:rgba(255,95,160,.2);color:var(--accent3)">
+      <div class="sdot" style="background:var(--accent3)"></div>VISUAL READY
+    </div>
+  </div>
+
+  <!-- STEP 1: 파일 종류 선택 -->
+  <div class="card a1">
+    <div class="ct" style="color:var(--accent3)">01 &nbsp; 시각화할 파일 종류 선택</div>
+    <div class="vz-filetype-grid">
+      <div class="vz-ft on" data-type="excel" onclick="togVzType(this)">
+        <div class="vf-check">✓</div>
+        <div class="vf-ic">📊</div>
+        <div class="vf-nm">Excel / CSV</div>
+        <div class="vf-ds">수치·표 데이터<br>완벽 파싱</div>
+      </div>
+      <div class="vz-ft" data-type="pdf" onclick="togVzType(this)">
+        <div class="vf-check">✓</div>
+        <div class="vf-ic">📄</div>
+        <div class="vf-nm">PDF</div>
+        <div class="vf-ds">텍스트 추출 후<br>AI 분석</div>
+      </div>
+      <div class="vz-ft" data-type="word" onclick="togVzType(this)">
+        <div class="vf-check">✓</div>
+        <div class="vf-ic">📝</div>
+        <div class="vf-nm">Word (.docx)</div>
+        <div class="vf-ds">문서 내 수치<br>AI 추출</div>
+      </div>
+      <div class="vz-ft" data-type="image" onclick="togVzType(this)">
+        <div class="vf-check">✓</div>
+        <div class="vf-ic">🖼️</div>
+        <div class="vf-nm">이미지</div>
+        <div class="vf-ds">표·그래프 캡처<br>AI Vision 해석</div>
+      </div>
+      <div class="vz-ft disabled" data-type="hwp">
+        <div class="vf-check"></div>
+        <div class="vf-ic">🚫</div>
+        <div class="vf-nm">HWP (한글)</div>
+        <div class="vf-ds">브라우저 지원<br>불가</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 차트 종류 선택 -->
+  <div class="card a2">
+    <div class="ct" style="color:var(--accent3)">02 &nbsp; 차트 종류 선택 <span style="color:var(--muted);font-size:9px;margin-left:4px">(AI 추천 자동 선택됨 · 복수 선택 가능)</span></div>
+    <div class="vz-type-grid">
+      <div class="vz-type on" data-chart="bar" onclick="togChartType(this)">
+        <div class="vt-ic">📊</div>
+        <div class="vt-nm">막대 차트</div>
+        <div class="vt-ds">비교·랭킹</div>
+      </div>
+      <div class="vz-type" data-chart="line" onclick="togChartType(this)">
+        <div class="vt-ic">📈</div>
+        <div class="vt-nm">꺾은선 그래프</div>
+        <div class="vt-ds">추이·트렌드</div>
+      </div>
+      <div class="vz-type" data-chart="pie" onclick="togChartType(this)">
+        <div class="vt-ic">🥧</div>
+        <div class="vt-nm">파이 차트</div>
+        <div class="vt-ds">비율·구성</div>
+      </div>
+      <div class="vz-type" data-chart="doughnut" onclick="togChartType(this)">
+        <div class="vt-ic">🍩</div>
+        <div class="vt-nm">도넛 차트</div>
+        <div class="vt-ds">예산 배분</div>
+      </div>
+      <div class="vz-type" data-chart="radar" onclick="togChartType(this)">
+        <div class="vt-ic">🕸️</div>
+        <div class="vt-nm">레이더 차트</div>
+        <div class="vt-ds">경쟁사 비교</div>
+      </div>
+      <div class="vz-type" data-chart="polarArea" onclick="togChartType(this)">
+        <div class="vt-ic">🎯</div>
+        <div class="vt-nm">폴라 차트</div>
+        <div class="vt-ds">항목별 크기</div>
+      </div>
+      <div class="vz-type" data-chart="bubble" onclick="togChartType(this)">
+        <div class="vt-ic">🫧</div>
+        <div class="vt-nm">버블 차트</div>
+        <div class="vt-ds">3차원 분석</div>
+      </div>
+      <div class="vz-type" data-chart="scatter" onclick="togChartType(this)">
+        <div class="vt-ic">✦</div>
+        <div class="vt-nm">산점도</div>
+        <div class="vt-ds">상관관계</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 파일 업로드 -->
+  <div class="card a3">
+    <div class="ct" style="color:var(--accent3)">03 &nbsp; 파일 업로드</div>
+    <div class="vz-upload-wrap">
+      <div class="vz-uz" id="vzDZ" ondragover="vzDov(event)" ondragleave="vzDlv()" ondrop="vzDdr(event)">
+        <input type="file" id="vzFI" multiple accept=".xlsx,.xls,.csv,.pdf,.docx,.jpg,.jpeg,.png,.webp" onchange="vzHandleFiles(this.files)">
+        <div class="vu-ic">📂</div>
+        <h4>파일을 여기에 드래그하거나 클릭해서 선택</h4>
+        <p>Excel · CSV · PDF · Word(.docx) · 이미지 — 다중 선택 가능</p>
+      </div>
+    </div>
+    <div class="vz-chips" id="vzChips"></div>
+
+    <!-- 데이터 미리보기 (Excel/CSV일 때만) -->
+    <div id="vzPreviewWrap" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px">
+        <div style="font-size:9px;font-family:var(--fm);letter-spacing:2px;color:var(--muted);text-transform:uppercase">📋 데이터 미리보기</div>
+        <div style="font-size:10px;color:var(--muted);font-family:var(--fm)" id="vzRowCount"></div>
+      </div>
+      <div class="vz-data-preview" id="vzPreviewTable"></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: 시각화 옵션 -->
+  <div class="card a4">
+    <div class="ct" style="color:var(--accent3)">04 &nbsp; 시각화 옵션</div>
+    <div class="r2">
+      <div class="fg">
+        <label class="fl">차트 제목</label>
+        <input class="fi" type="text" id="vzChartTitle" placeholder="예: 매체별 광고 성과 비교 (2026년 5월)">
+      </div>
+      <div class="fg">
+        <label class="fl">X축 컬럼 (Excel/CSV)</label>
+        <select class="fs" id="vzXCol"><option value="">— 파일 업로드 후 자동 감지 —</option></select>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <label class="fl">Y축 컬럼 (수치) — 복수 선택 가능</label>
+        <select class="fs" id="vzYCol" multiple style="min-height:80px"><option value="">— 파일 업로드 후 자동 감지 —</option></select>
+      </div>
+      <div class="fg">
+        <label class="fl">추가 분석 요청 (AI에게)</label>
+        <textarea class="fta" id="vzPromptExtra" placeholder="예: 매출 상위 3개 항목 강조&#10;전월 대비 증감률도 표시&#10;경쟁사와 비교 인사이트 추출"></textarea>
+      </div>
+    </div>
+    <!-- 컬러 테마 -->
+    <div class="fg">
+      <label class="fl">컬러 테마</label>
+      <div class="vz-theme-row" id="vzThemeRow">
+        <div class="vz-theme on" data-theme="neon" style="background:linear-gradient(135deg,#39FFB0,#4E8FFF)" title="네온 (기본)" onclick="selVzTheme(this)"></div>
+        <div class="vz-theme" data-theme="sunset" style="background:linear-gradient(135deg,#FF6B6B,#FFD166)" title="선셋" onclick="selVzTheme(this)"></div>
+        <div class="vz-theme" data-theme="ocean" style="background:linear-gradient(135deg,#0077B6,#48CAE4)" title="오션" onclick="selVzTheme(this)"></div>
+        <div class="vz-theme" data-theme="purple" style="background:linear-gradient(135deg,#A78BFA,#EC4899)" title="퍼플" onclick="selVzTheme(this)"></div>
+        <div class="vz-theme" data-theme="mono" style="background:linear-gradient(135deg,#6B7280,#D1D5DB)" title="모노크롬" onclick="selVzTheme(this)"></div>
+        <div class="vz-theme" data-theme="brand" style="background:linear-gradient(135deg,#1B365D,#4A6999)" title="브랜드 네이비" onclick="selVzTheme(this)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: AI 엔진 + 실행 -->
+  <div class="card a5">
+    <div class="ct" style="color:var(--accent3)">05 &nbsp; AI 엔진 & 시각화 실행</div>
+    <div class="ai-g" id="vaiSel">
+      <div class="aio sel" onclick="selAI('claude','vaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','vaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','vaiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+    </div>
+    <div id="vApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="vApiLbl">API Key</label><input class="fi" type="password" id="vApiKey" placeholder="sk-..."></div>
+    </div>
+    <hr class="dv">
+    <button class="btn bfl" style="background:linear-gradient(135deg,var(--accent3),#C026D3);color:#fff;font-weight:900;box-shadow:0 4px 20px rgba(255,95,160,.3)" onclick="runViz()" id="vizBtn">
+      <span>✨</span> AI 데이터 시각화 시작
+    </button>
+    <div class="pg" id="vzPg"><div class="pgf" id="vzPgf" style="background:linear-gradient(90deg,var(--accent3),#C026D3)"></div></div>
+  </div>
+
+  <!-- CHART OUTPUT -->
+  <div class="vz-canvas-area" id="vzCanvasArea">
+    <div class="vz-canvas-header">
+      <div class="vz-canvas-title"><span>✨</span> 시각화 결과 <span id="vzChartCount" style="color:var(--muted)"></span></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="regenViz()">🔄 재생성</button>
+      </div>
+    </div>
+
+    <!-- Charts rendered here -->
+    <div class="vz-chart-grid" id="vzChartGrid"></div>
+
+    <!-- AI Insight -->
+    <div class="vz-insight" id="vzInsight" style="display:none">
+      <div class="vz-insight-h"><span>🤖</span> AI 인사이트 & 해설</div>
+      <div class="vz-insight-body" id="vzInsightBody"></div>
+    </div>
+
+    <!-- Export buttons -->
+    <div class="vz-export-row">
+      <button class="btn" style="background:linear-gradient(135deg,#C026D3,var(--accent3));color:#fff;font-size:12px;padding:11px" onclick="vzExport('ppt')"><span>📑</span> PPT 저장</button>
+      <button class="btn" style="background:linear-gradient(135deg,#EF4444,#F97316);color:#fff;font-size:12px;padding:11px" onclick="vzExport('pdf')"><span>📄</span> PDF 저장</button>
+      <button class="btn" style="background:linear-gradient(135deg,var(--accent),#00D68F);color:var(--bg);font-size:12px;padding:11px" onclick="vzExport('png')"><span>🖼️</span> PNG 저장</button>
+      <button class="btn" style="background:linear-gradient(135deg,var(--accent2),#7C3AED);color:#fff;font-size:12px;padding:11px" onclick="vzExport('excel')"><span>📊</span> Excel 저장</button>
+    </div>
   </div>
 </div>
 
@@ -1643,6 +1923,470 @@ S.ai['baiSel'] = 'claude';
 document.addEventListener('DOMContentLoaded', ()=>{
   // Override selAI to handle baiSel
   renderHist('budget');
+});
+// ═══════════════════════════════════════════════
+//  DATA VISUALIZATION ENGINE
+// ═══════════════════════════════════════════════
+
+// PDF.js worker
+if(typeof pdfjsLib !== 'undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+const VZ = {
+  files: [],
+  parsedData: [],      // [{label, values}] for structured data
+  rawHeaders: [],
+  rawRows: [],
+  selectedFileTypes: new Set(['excel']),
+  selectedChartTypes: new Set(['bar']),
+  activeCharts: [],    // Chart.js instances
+  colorTheme: 'neon',
+  lastInsight: '',
+  lastChartData: null,
+};
+
+// Color palettes per theme
+const VZ_PALETTES = {
+  neon:   ['#39FFB0','#4E8FFF','#FF5FA0','#FFD166','#A78BFA','#48CAE4','#F97316','#22D3EE'],
+  sunset: ['#FF6B6B','#FFD166','#FF9F43','#EE5A24','#F8C291','#FFEAA7','#FD7272','#E17055'],
+  ocean:  ['#0077B6','#48CAE4','#90E0EF','#00B4D8','#023E8A','#0096C7','#ADE8F4','#CAF0F8'],
+  purple: ['#A78BFA','#EC4899','#8B5CF6','#F472B6','#7C3AED','#DB2777','#6D28D9','#BE185D'],
+  mono:   ['#E5E7EB','#9CA3AF','#6B7280','#4B5563','#374151','#D1D5DB','#F3F4F6','#1F2937'],
+  brand:  ['#4A6999','#1B365D','#7A93C0','#2C4A75','#A0B4D0','#5B7FAA','#3D5A8A','#8FACC8'],
+};
+
+// ── FILE TYPE TOGGLE ──
+function togVzType(el){
+  el.classList.toggle('on');
+  const t = el.dataset.type;
+  if(el.classList.contains('on')) VZ.selectedFileTypes.add(t);
+  else VZ.selectedFileTypes.delete(t);
+}
+
+// ── CHART TYPE TOGGLE ──
+function togChartType(el){
+  el.classList.toggle('on');
+  const t = el.dataset.chart;
+  if(el.classList.contains('on')) VZ.selectedChartTypes.add(t);
+  else VZ.selectedChartTypes.delete(t);
+}
+
+// ── COLOR THEME ──
+function selVzTheme(el){
+  document.querySelectorAll('.vz-theme').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  VZ.colorTheme = el.dataset.theme;
+}
+
+// ── FILE HANDLING ──
+function vzDov(e){ e.preventDefault(); document.getElementById('vzDZ').classList.add('dov'); }
+function vzDlv(){ document.getElementById('vzDZ').classList.remove('dov'); }
+function vzDdr(e){ e.preventDefault(); document.getElementById('vzDZ').classList.remove('dov'); vzHandleFiles(e.dataTransfer.files); }
+
+function vzHandleFiles(fl){
+  Array.from(fl).forEach(f=>{ if(!VZ.files.find(x=>x.name===f.name)) VZ.files.push(f); });
+  renderVzChips();
+  // Auto-detect and parse Excel/CSV immediately
+  const excelFiles = VZ.files.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
+  if(excelFiles.length > 0) parseExcelFile(excelFiles[0]);
+}
+
+function removeVzFile(i){ VZ.files.splice(i,1); renderVzChips(); }
+
+function renderVzChips(){
+  const icons = { xlsx:'📊', xls:'📊', csv:'📊', pdf:'📄', docx:'📝', jpg:'🖼️', jpeg:'🖼️', png:'🖼️', webp:'🖼️' };
+  document.getElementById('vzChips').innerHTML = VZ.files.map((f,i)=>{
+    const ext = f.name.split('.').pop().toLowerCase();
+    return `<div class="vz-chip">${icons[ext]||'📁'} ${f.name} <button onclick="removeVzFile(${i})">✕</button></div>`;
+  }).join('');
+}
+
+// ── PARSE EXCEL/CSV ──
+async function parseExcelFile(file){
+  const data = await readXLSX(file);
+  if(!data || !data.length) return;
+  VZ.rawHeaders = Object.keys(data[0]);
+  VZ.rawRows    = data;
+
+  // Populate column selectors
+  const xSel = document.getElementById('vzXCol');
+  const ySel = document.getElementById('vzYCol');
+  xSel.innerHTML = VZ.rawHeaders.map(h=>`<option value="${h}">${h}</option>`).join('');
+  ySel.innerHTML  = VZ.rawHeaders
+    .filter(h => data.slice(0,5).some(r => !isNaN(parseFloat(r[h]))))
+    .map(h=>`<option value="${h}">${h}</option>`).join('');
+
+  // Preview table
+  document.getElementById('vzPreviewWrap').style.display = 'block';
+  document.getElementById('vzRowCount').textContent = data.length.toLocaleString()+'행 × '+VZ.rawHeaders.length+'열';
+  const cols = VZ.rawHeaders.slice(0,8);
+  document.getElementById('vzPreviewTable').innerHTML = `<table>
+    <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${data.slice(0,6).map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>`;
+  toast('데이터 파싱 완료 ✅ — '+data.length+'행 감지','s');
+}
+
+// ── BUILD VIZ PROMPT ──
+function buildVizPrompt(dataContext){
+  const types  = [...VZ.selectedChartTypes].join(', ');
+  const extra  = document.getElementById('vzPromptExtra').value.trim();
+  const title  = document.getElementById('vzChartTitle').value.trim();
+  return `당신은 데이터 시각화 전문가입니다.
+아래 데이터를 분석해서 JSON 형식으로만 응답해주세요. 다른 텍스트 절대 없이 JSON만.
+
+[데이터]
+${dataContext}
+
+[요청 차트 종류]: ${types}
+${title ? '[차트 제목]: '+title : ''}
+${extra ? '[추가 요청]: '+extra : ''}
+
+아래 JSON 형식으로만:
+{
+  "charts": [
+    {
+      "type": "bar|line|pie|doughnut|radar|polarArea|bubble|scatter",
+      "title": "차트 제목",
+      "labels": ["라벨1","라벨2",...],
+      "datasets": [
+        {
+          "label": "데이터셋명",
+          "data": [숫자,숫자,...],
+          "unit": "원|%|회|명|개 등"
+        }
+      ],
+      "reason": "이 차트를 선택한 이유 한 줄"
+    }
+  ],
+  "insight": "데이터 인사이트 해설 (300자 이상, 이모지 포함, 마케터 관점에서 핵심 시사점·이상치·제안)"
+}
+
+bubble/scatter는 data를 [{x,y,r}] 형식으로.
+선택한 차트 종류(${types}) 위주로 생성하되, 데이터에 맞는 것만 포함. 최대 4개 차트.`;
+}
+
+// ── EXTRACT DATA CONTEXT ──
+async function extractDataContext(){
+  const contexts = [];
+  for(const f of VZ.files){
+    const ext = f.name.split('.').pop().toLowerCase();
+    if(['xlsx','xls','csv'].includes(ext)){
+      if(VZ.rawRows.length){
+        const sample = VZ.rawRows.slice(0,30);
+        const xCol = document.getElementById('vzXCol').value;
+        const yOpts = document.getElementById('vzYCol');
+        const yCols = [...yOpts.selectedOptions].map(o=>o.value);
+        contexts.push(`파일명: ${f.name}\n헤더: ${VZ.rawHeaders.join(', ')}\nX축(라벨) 컬럼: ${xCol||VZ.rawHeaders[0]}\nY축(수치) 컬럼: ${yCols.join(', ')||'자동 감지'}\n데이터 샘플 (${sample.length}행):\n${JSON.stringify(sample,null,1)}`);
+      }
+    } else if(ext==='pdf'){
+      const text = await extractPDFText(f);
+      contexts.push(`파일명: ${f.name} (PDF)\n내용:\n${text.slice(0,3000)}`);
+    } else if(ext==='docx'){
+      const text = await extractDocxText(f);
+      contexts.push(`파일명: ${f.name} (Word)\n내용:\n${text.slice(0,3000)}`);
+    } else if(['jpg','jpeg','png','webp'].includes(ext)){
+      contexts.push(`파일명: ${f.name} (이미지 — AI Vision으로 분석)\n※이미지 내 표·수치를 AI가 해석합니다.`);
+    }
+  }
+  return contexts.join('\n\n---\n\n');
+}
+
+async function extractPDFText(file){
+  if(typeof pdfjsLib === 'undefined') return '(PDF.js 미로드)';
+  return new Promise((res)=>{
+    const fr = new FileReader();
+    fr.onload = async(e)=>{
+      try{
+        const pdf = await pdfjsLib.getDocument({data: e.target.result}).promise;
+        let text = '';
+        for(let i=1;i<=Math.min(pdf.numPages,10);i++){
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(s=>s.str).join(' ') + '\n';
+        }
+        res(text);
+      }catch(err){ res('PDF 파싱 오류: '+err.message); }
+    };
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+async function extractDocxText(file){
+  if(typeof mammoth === 'undefined') return '(mammoth.js 미로드)';
+  return new Promise((res)=>{
+    const fr = new FileReader();
+    fr.onload = async(e)=>{
+      try{
+        const result = await mammoth.extractRawText({arrayBuffer: e.target.result});
+        res(result.value);
+      }catch(err){ res('Word 파싱 오류: '+err.message); }
+    };
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+// ── MAIN RUN ──
+async function runViz(){
+  if(!VZ.files.length){ toast('파일을 먼저 업로드해주세요!','e'); return; }
+  if(!VZ.selectedChartTypes.size){ toast('차트 종류를 선택해주세요!','e'); return; }
+
+  const btn = document.getElementById('vizBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;AI 분석 중...';
+  const pg=document.getElementById('vzPg'); const pf=document.getElementById('vzPgf');
+  pg.classList.add('on'); pf.style.width='15%';
+
+  const model  = S.ai['vaiSel']||'claude';
+  const apiKey = document.getElementById('vApiKey').value.trim();
+
+  try{
+    pf.style.width='35%';
+    const dataCtx = await extractDataContext();
+    pf.style.width='55%';
+    const prompt  = buildVizPrompt(dataCtx);
+    const raw     = await callAI(model, apiKey, prompt);
+    pf.style.width='80%';
+
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(clean);
+    VZ.lastChartData = result;
+    VZ.lastInsight   = result.insight || '';
+
+    pf.style.width='100%';
+    renderCharts(result);
+    toast('시각화 완료! ✨','s');
+  }catch(e){
+    toast('오류: '+e.message,'e');
+    console.error(e);
+  }
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false; btn.innerHTML='<span>✨</span> AI 데이터 시각화 시작';
+}
+
+function regenViz(){ if(VZ.files.length) runViz(); }
+
+// ── RENDER CHARTS ──
+function renderCharts(result){
+  const area  = document.getElementById('vzCanvasArea');
+  const grid  = document.getElementById('vzChartGrid');
+  area.classList.add('on');
+
+  // Destroy old charts
+  VZ.activeCharts.forEach(c=>c.destroy());
+  VZ.activeCharts = [];
+  grid.innerHTML  = '';
+
+  const palette = VZ_PALETTES[VZ.colorTheme] || VZ_PALETTES.neon;
+  const charts  = result.charts || [];
+  document.getElementById('vzChartCount').textContent = `(${charts.length}개 생성됨)`;
+
+  charts.forEach((ch, ci)=>{
+    const isFull = ['pie','doughnut','radar','polarArea'].includes(ch.type) && charts.length===1;
+    const box = document.createElement('div');
+    box.className = 'vz-chart-box'+(isFull?' full':'');
+    box.style.animationDelay = (ci*0.1)+'s';
+    box.innerHTML = `
+      <div class="vz-chart-label"><span>${getChartEmoji(ch.type)}</span>${ch.title||'차트 '+( ci+1)}<span style="margin-left:auto;color:var(--muted);font-size:8px">${ch.reason||''}</span></div>
+      <canvas id="vzCanvas_${ci}"></canvas>`;
+    grid.appendChild(box);
+
+    // Build Chart.js datasets
+    const isCircular = ['pie','doughnut','polarArea'].includes(ch.type);
+    const isRadar    = ch.type==='radar';
+    const datasets   = (ch.datasets||[]).map((ds,di)=>({
+      label: ds.label||'',
+      data:  ds.data||[],
+      backgroundColor: isCircular||isRadar
+        ? palette.map(c=>c+'BB')
+        : palette[di % palette.length]+'AA',
+      borderColor: isCircular
+        ? palette.map(c=>c)
+        : palette[di % palette.length],
+      borderWidth: isCircular ? 2 : 2,
+      borderRadius: ch.type==='bar' ? 6 : 0,
+      fill: ch.type==='line' ? false : undefined,
+      tension: ch.type==='line' ? 0.4 : undefined,
+      pointBackgroundColor: palette[di % palette.length],
+    }));
+
+    const ctx = document.getElementById('vzCanvas_'+ci);
+    const cfg = {
+      type: ch.type,
+      data: { labels: ch.labels||[], datasets },
+      options: {
+        responsive:true,
+        animation:{ duration:900, easing:'easeOutQuart' },
+        plugins:{
+          legend:{ labels:{ color:'#E8EEFF', font:{family:'Noto Sans KR',size:11}, padding:16 } },
+          tooltip:{
+            backgroundColor:'rgba(10,16,37,.95)',
+            titleColor:'#E8EEFF',
+            bodyColor:'#7A93C0',
+            borderColor:'#1A2540',
+            borderWidth:1,
+            padding:12,
+            callbacks:{
+              label: ctx=>{
+                const unit = ch.datasets?.[ctx.datasetIndex]?.unit||'';
+                const v = typeof ctx.parsed.y !== 'undefined' ? ctx.parsed.y : ctx.parsed;
+                return ` ${ctx.dataset.label}: ${typeof v==='number'?v.toLocaleString():v}${unit}`;
+              }
+            }
+          }
+        },
+        scales: (isCircular||isRadar) ? (isRadar?{r:{ticks:{color:'#5A7099'},pointLabels:{color:'#E8EEFF'}}}:{}) : {
+          x:{ ticks:{color:'#7A93C0',font:{size:10}}, grid:{color:'rgba(26,37,64,.6)'} },
+          y:{ ticks:{color:'#7A93C0',font:{size:10}}, grid:{color:'rgba(26,37,64,.6)'} }
+        }
+      }
+    };
+    const chartInst = new Chart(ctx, cfg);
+    VZ.activeCharts.push(chartInst);
+  });
+
+  // AI Insight
+  if(VZ.lastInsight){
+    const insightEl = document.getElementById('vzInsight');
+    const bodyEl    = document.getElementById('vzInsightBody');
+    insightEl.style.display='block';
+    bodyEl.innerHTML='<span class="cur"></span>';
+    typewrite(bodyEl, VZ.lastInsight);
+  }
+
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function getChartEmoji(type){
+  const m={bar:'📊',line:'📈',pie:'🥧',doughnut:'🍩',radar:'🕸️',polarArea:'🎯',bubble:'🫧',scatter:'✦'};
+  return m[type]||'📊';
+}
+
+// ── EXPORT ──
+async function vzExport(fmt){
+  if(!VZ.activeCharts.length){ toast('먼저 차트를 생성해주세요','e'); return; }
+  const title = document.getElementById('vzChartTitle').value || '마케팅 데이터 시각화';
+
+  if(fmt==='png'){
+    const grid = document.getElementById('vzChartGrid');
+    // Export each chart as PNG
+    document.querySelectorAll('[id^="vzCanvas_"]').forEach((canvas,i)=>{
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = `${title}_차트${i+1}.png`;
+      a.click();
+    });
+    toast('PNG 저장 완료!','s'); return;
+  }
+
+  if(fmt==='excel'){
+    if(!VZ.rawRows.length){ toast('Excel 원본 데이터가 없습니다','e'); return; }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(VZ.rawRows);
+    XLSX.utils.book_append_sheet(wb,ws,'원본 데이터');
+    // Summary sheet
+    if(VZ.lastChartData?.charts){
+      VZ.lastChartData.charts.forEach((ch,i)=>{
+        const rows = (ch.labels||[]).map((lbl,li)=>({
+          라벨:lbl,
+          ...(ch.datasets||[]).reduce((acc,ds)=>({...acc,[ds.label]:ds.data[li]}),{})
+        }));
+        const ws2 = XLSX.utils.json_to_sheet(rows);
+        XLSX.utils.book_append_sheet(wb,ws2,'차트'+(i+1));
+      });
+    }
+    XLSX.writeFile(wb, title+'_시각화.xlsx');
+    toast('Excel 저장 완료!','s'); return;
+  }
+
+  if(fmt==='ppt'){
+    if(typeof PptxGenJS==='undefined'){ toast('PPT 라이브러리 로딩 중... 잠시 후 다시 시도하세요','i'); return; }
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_WIDE';
+    pptx.defineLayout({name:'WIDE',width:13.33,height:7.5});
+
+    // Title slide
+    const tSlide = pptx.addSlide();
+    tSlide.background = {color:'07090F'};
+    tSlide.addText(title, {x:0.5,y:2.5,w:12,h:1.5,fontSize:36,bold:true,color:'E8EEFF',align:'center',fontFace:'Arial'});
+    tSlide.addText(new Date().toLocaleDateString('ko-KR')+' | GOGUP TOOL', {x:0.5,y:4.2,w:12,h:0.5,fontSize:14,color:'5A7099',align:'center'});
+    tSlide.addShape(pptx.ShapeType.rect,{x:4,y:4.9,w:5.33,h:0.05,fill:{color:'4E8FFF'},line:{color:'4E8FFF'}});
+
+    const palette = VZ_PALETTES[VZ.colorTheme];
+
+    // Chart slides
+    for(let ci=0; ci < VZ.activeCharts.length; ci++){
+      const ch     = VZ.lastChartData.charts[ci];
+      const canvas = document.getElementById('vzCanvas_'+ci);
+      if(!canvas) continue;
+      const imgData = canvas.toDataURL('image/png');
+
+      const slide = pptx.addSlide();
+      slide.background = {color:'0C1020'};
+      slide.addText(ch.title||'차트 '+(ci+1), {x:0.5,y:0.3,w:12,h:0.6,fontSize:20,bold:true,color:'E8EEFF',fontFace:'Arial'});
+      slide.addText(ch.reason||'', {x:0.5,y:0.9,w:12,h:0.35,fontSize:11,color:'5A7099',fontFace:'Arial'});
+      slide.addImage({data:imgData, x:1.0, y:1.3, w:11.33, h:5.5});
+    }
+
+    // Insight slide
+    if(VZ.lastInsight){
+      const iSlide = pptx.addSlide();
+      iSlide.background = {color:'0C1020'};
+      iSlide.addText('🤖 AI 인사이트', {x:0.5,y:0.3,w:12,h:0.6,fontSize:22,bold:true,color:'FF5FA0',fontFace:'Arial'});
+      iSlide.addShape(pptx.ShapeType.rect,{x:0.5,y:1.0,w:12.33,h:5.8,fill:{color:'101525'},line:{color:'1A2540'}});
+      iSlide.addText(VZ.lastInsight, {x:0.8,y:1.2,w:11.8,h:5.4,fontSize:13,color:'E8EEFF',fontFace:'Arial',valign:'top',wrap:true});
+    }
+
+    await pptx.writeFile({fileName: title+'_시각화.pptx'});
+    toast('PPT 저장 완료! 📑','s'); return;
+  }
+
+  if(fmt==='pdf'){
+    if(typeof jspdf==='undefined'&&typeof window.jspdf==='undefined'){ toast('PDF 라이브러리 로딩 중...','i'); return; }
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({orientation:'landscape',unit:'px',format:'a4'});
+    const pw  = pdf.internal.pageSize.getWidth();
+    const ph  = pdf.internal.pageSize.getHeight();
+
+    // Title
+    pdf.setFillColor(7,9,15);
+    pdf.rect(0,0,pw,ph,'F');
+    pdf.setFontSize(28); pdf.setTextColor(232,238,255);
+    pdf.text(title, pw/2, 80, {align:'center'});
+    pdf.setFontSize(11); pdf.setTextColor(90,112,153);
+    pdf.text(new Date().toLocaleDateString('ko-KR')+' | GOGUP TOOL', pw/2, 105, {align:'center'});
+
+    for(let ci=0; ci < VZ.activeCharts.length; ci++){
+      const canvas = document.getElementById('vzCanvas_'+ci);
+      if(!canvas) continue;
+      const ch     = VZ.lastChartData.charts[ci];
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addPage();
+      pdf.setFillColor(12,16,32); pdf.rect(0,0,pw,ph,'F');
+      pdf.setFontSize(16); pdf.setTextColor(232,238,255);
+      pdf.text(ch.title||'차트'+(ci+1), 30, 40);
+      pdf.addImage(imgData,'PNG', 30, 55, pw-60, ph-80);
+    }
+
+    if(VZ.lastInsight){
+      pdf.addPage();
+      pdf.setFillColor(12,16,32); pdf.rect(0,0,pw,ph,'F');
+      pdf.setFontSize(16); pdf.setTextColor(255,95,160);
+      pdf.text('AI 인사이트', 30, 40);
+      pdf.setFontSize(11); pdf.setTextColor(232,238,255);
+      const lines = pdf.splitTextToSize(VZ.lastInsight, pw-60);
+      pdf.text(lines, 30, 65);
+    }
+
+    pdf.save(title+'_시각화.pdf');
+    toast('PDF 저장 완료! 📄','s');
+  }
+}
+
+// register AI model for viz
+S.ai['vaiSel'] = 'claude';
+document.addEventListener('DOMContentLoaded', ()=>{
+  // extra init for viz already handled
 });
 </script>
 </body>
